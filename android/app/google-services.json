@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "509124225523",
+    "project_id": "acl-exavation",
+    "storage_bucket": "acl-exavation.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509124225523:android:3871d2d487089a9ee24a86",
+        "android_client_info": {
+          "package_name": "com.cr.acl"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHeRksP9eDhJPP2daDzIjRohuiuYXRXHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509124225523:android:d4062708b1bd443ce24a86",
+        "android_client_info": {
+          "package_name": "com.example.acl_exavation_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHeRksP9eDhJPP2daDzIjRohuiuYXRXHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

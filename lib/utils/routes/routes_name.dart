@@ -14,6 +14,7 @@ class RoutesName {
   static const String notifications = '/notifications-view';
   static const String changePassword = '/changePassword-view';
   static const String changeEmail = '/changeEmail-view';
+  static const String editProfile = '/editProfile-view';
   static const String timeFormat = '/timeFormat-view';
   static const String truckLogDetail = '/truckLogDetail-view';
   static const String manageTrucks = '/manage-trucks';

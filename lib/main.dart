@@ -1,4 +1,3 @@
-
 // import 'package:acl/utils/routes/routes.dart';
 // import 'package:acl/utils/routes/routes_name.dart';
 // import 'package:acl/view/add_truck_entery_view.dart';
@@ -38,23 +37,38 @@
 //   }
 // }
 
-
-
+import 'package:acl/controller/change_email_model_view.dart';
+import 'package:acl/controller/forgot_password_view.dart';
+import 'package:acl/controller/login_view_model.dart';
+import 'package:acl/controller/logout_view_model.dart';
+import 'package:acl/controller/settings_reset_password_model.dart';
+import 'package:acl/controller/signup_view_model.dart';
+import 'package:acl/controller/user_profile_controller.dart';
 import 'package:acl/utils/routes/routes.dart';
 import 'package:acl/utils/routes/routes_name.dart';
-import 'package:acl/view/homeview.dart';
-import 'package:acl/view/loginview.dart';
-import 'package:acl/view/main_wrapper.dart';
-import 'package:acl/view/splash_view.dart';
-import 'package:acl/viewmodel/auth_viewmodel.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => AuthViewmodel())],
-    child: const MyApp(),
-  ));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SignupViewModel()),
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => LogoutViewModel()),
+        ChangeNotifierProvider(create: (_) => ForgotPasswordViewModel()),
+        ChangeNotifierProvider(create: (_) => ChangePasswordModel()),
+        ChangeNotifierProvider(create: (_) => ChangeEmailModelView()),
+        ChangeNotifierProvider(create: (_) => UserProfileController()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -2,6 +2,7 @@ import 'package:acl/utils/routes/routes_name.dart';
 import 'package:acl/view/add_truck_entery_view.dart';
 import 'package:acl/view/change_email_view.dart';
 import 'package:acl/view/change_password_view.dart';
+import 'package:acl/view/edit_profile_view.dart';
 import 'package:acl/view/edit_truck_entry_view.dart';
 import 'package:acl/view/homeview.dart';
 import 'package:acl/view/loginview.dart';
@@ -24,7 +25,7 @@ class Routes {
       case RoutesName.login:
         return MaterialPageRoute(builder: (_) => Loginview());
       case RoutesName.signup:
-        return MaterialPageRoute(builder: (_) => Sginupview());
+        return MaterialPageRoute(builder: (_) => SignupView());
       case RoutesName.home:
         return MaterialPageRoute(builder: (_) => Homeview());
       case RoutesName.truckLog:
@@ -46,6 +47,8 @@ class Routes {
         return MaterialPageRoute(builder: (_) => ChangePasswordView());
       case RoutesName.changeEmail:
         return MaterialPageRoute(builder: (_) => ChangeEmailView());
+      case RoutesName.editProfile:
+        return MaterialPageRoute(builder: (_) => EditProfileView());
       case RoutesName.eidtTruckEntry:
         return MaterialPageRoute(builder: (_) => EditTruckEntryView());
       case RoutesName.timeFormat:

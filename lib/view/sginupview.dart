@@ -1,16 +1,39 @@
+import 'package:acl/controller/signup_view_model.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/responsive.dart';
 import 'package:acl/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
-class Sginupview extends StatelessWidget {
-  const Sginupview({super.key});
+// ==================== VIEW =========================
+class SignupView extends StatefulWidget {
+  @override
+  _SignupViewState createState() => _SignupViewState();
+}
+
+class _SignupViewState extends State<SignupView> {
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailAddressController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Clear any previous errors when view loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<SignupViewModel>(context, listen: false).clearError();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Responsive.init(context);
+
     return Scaffold(
       backgroundColor: AppColor.secondaryColor,
       body: Padding(
@@ -21,13 +44,13 @@ class Sginupview extends StatelessWidget {
               flex: 2,
               child: Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: RadialGradient(
                     center: Alignment.topRight,
                     radius: 0.6,
                     focalRadius: 0.1,
                     colors: [Color(0xFF4EEED0), Color(0xFF111B19)],
-                  ), // Apply the gradient here
+                  ),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -35,15 +58,15 @@ class Sginupview extends StatelessWidget {
                   children: [
                     SvgPicture.asset("assets/images/login.svg"),
                     Text(
-                      "Sign in to your account",
+                      "Sign up for a new account",
                       style: GoogleFonts.rethinkSans(
-                        fontSize: Responsive.textScaleFactor * 36,
+                        fontSize: Responsive.textScaleFactor * 32,
                         color: AppColor.whiteColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      "Sign in to explore about our app",
+                      "Join us to explore the app",
                       style: GoogleFonts.rethinkSans(
                         color: AppColor.whiteColor,
                         fontWeight: FontWeight.normal,
@@ -53,6 +76,7 @@ class Sginupview extends StatelessWidget {
                 ),
               ),
             ),
+
             Expanded(
               flex: 3,
               child: Container(
@@ -65,188 +89,216 @@ class Sginupview extends StatelessWidget {
                     horizontal: 12.0,
                     vertical: 16.0,
                   ),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        decoration: InputDecoration(
-                          prefix: SvgPicture.asset(
-                            "assets/icons/majesticons_mail (1).svg",
-                          ),
-                          hint: Text(
-                            "Full Name",
-                            style: GoogleFonts.rethinkSans(
-                              color: AppColor.filletextdColor,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: AppColor.filledColor,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          // border: OutlineInputBorder(
+                  child: Consumer<SignupViewModel>(
+                    builder: (context, signupVM, child) {
+                      return Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            // Error Message
+                            if (signupVM.errorMessage != null)
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.all(12),
+                                margin: EdgeInsets.only(bottom: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.red.shade200,
+                                  ),
+                                ),
+                                child: Text(
+                                  signupVM.errorMessage!,
+                                  style: GoogleFonts.rethinkSans(
+                                    color: Colors.red.shade700,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
 
-                          //   borderRadius: BorderRadius.circular(26)
-                          // )
-                        ),
-                      ),
-                      SizedBox(height: Responsive.h(1)),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          prefix: SvgPicture.asset(
-                            "assets/icons/majesticons_mail (1).svg",
-                          ),
-                          hint: Text(
-                            "Email Address",
-                            style: GoogleFonts.rethinkSans(
-                              color: AppColor.filletextdColor,
+                            // Full Name
+                            TextFormField(
+                              controller: fullNameController,
+                              textCapitalization: TextCapitalization.words,
+                              onChanged: (value) {
+                                // Clear error when user starts typing
+                                if (signupVM.errorMessage != null) {
+                                  signupVM.clearError();
+                                }
+                              },
+                              validator: (value) {
+                                return signupVM.validateName(value ?? '');
+                              },
+                              decoration: _inputDecoration(
+                                iconPath:
+                                    "assets/icons/majesticons_mail (1).svg",
+                                hint: "Full Name",
+                              ),
                             ),
-                          ),
-                          filled: true,
-                          fillColor: AppColor.filledColor,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          // border: OutlineInputBorder(
+                            SizedBox(height: Responsive.h(1)),
 
-                          //   borderRadius: BorderRadius.circular(26)
-                          // )
-                        ),
-                      ),
-                      SizedBox(height: Responsive.h(1)),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          prefix: SvgPicture.asset(
-                            "assets/icons/tabler_lock-filled (1).svg",
-                          ),
-                          hint: Text(
-                            "Password",
-                            style: GoogleFonts.rethinkSans(
-                              color: AppColor.filletextdColor,
+                            // Email
+                            TextFormField(
+                              controller: emailAddressController,
+                              keyboardType: TextInputType.emailAddress,
+                              onChanged: (value) {
+                                // Clear error when user starts typing
+                                if (signupVM.errorMessage != null) {
+                                  signupVM.clearError();
+                                }
+                              },
+                              validator: (value) {
+                                return signupVM.validateEmail(value ?? '');
+                              },
+                              decoration: _inputDecoration(
+                                iconPath:
+                                    "assets/icons/majesticons_mail (1).svg",
+                                hint: "Email Address",
+                              ),
                             ),
-                          ),
-                          filled: true,
-                          fillColor: AppColor.filledColor,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColor.filledColor),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          // border: OutlineInputBorder(
+                            SizedBox(height: Responsive.h(1)),
 
-                          //   borderRadius: BorderRadius.circular(26)
-                          // )
-                        ),
-                      ),
-                    
-                      SizedBox(height: Responsive.h(1)),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: AppColor.primaryColor,
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(child: Text("Signup")),
-                        ),
-                      ),
-                      SizedBox(height: Responsive.h(2)),
-                      Row(
-                        children: [
-                          Expanded(child: Divider()),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
+                            // Password
+                            TextFormField(
+                              controller: passwordController,
+                              obscureText: true,
+                              onChanged: (value) {
+                                // Clear error when user starts typing
+                                if (signupVM.errorMessage != null) {
+                                  signupVM.clearError();
+                                }
+                              },
+                              validator: (value) {
+                                return signupVM.validatePassword(value ?? '');
+                              },
+                              decoration: _inputDecoration(
+                                iconPath:
+                                    "assets/icons/tabler_lock-filled (1).svg",
+                                hint: "Password",
+                              ),
                             ),
-                            child: Text("OR"),
-                          ),
-                          Expanded(child: Divider()),
-                        ],
-                      ),
-                      SizedBox(height: Responsive.h(2)),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: AppColor.filledColor,
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: Row(
+                            SizedBox(height: Responsive.h(1)),
+
+                            // Password requirements info
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.blue.shade200),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Password Requirements:",
+                                    style: GoogleFonts.rethinkSans(
+                                      color: Colors.blue.shade700,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    "• At least 6 characters long",
+                                    style: GoogleFonts.rethinkSans(
+                                      color: Colors.blue.shade700,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: Responsive.h(1)),
+
+                            // Signup Button
+                            GestureDetector(
+                              onTap: signupVM.isLoading
+                                  ? null
+                                  : () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        await signupVM.signup(
+                                          fullNameController.text.trim(),
+                                          emailAddressController.text.trim(),
+                                          passwordController.text.trim(),
+                                        );
+
+                                        if (signupVM.errorMessage == null &&
+                                            !signupVM.isLoading) {
+                                          Navigator.pushReplacementNamed(
+                                            context,
+                                            RoutesName.main,
+                                          );
+                                        }
+                                      }
+                                    },
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: signupVM.isLoading
+                                      ? AppColor.primaryColor.withOpacity(0.6)
+                                      : AppColor.primaryColor,
+                                  borderRadius: BorderRadius.circular(22),
+                                ),
+                                padding: const EdgeInsets.all(16.0),
+                                child: Center(
+                                  child: signupVM.isLoading
+                                      ? SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : Text(
+                                          "Signup",
+                                          style: GoogleFonts.rethinkSans(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: Responsive.h(2)),
+
+                            // Divider
+                            Row(
                               children: [
-                                SizedBox(width: Responsive.w(20)),
-                                SvgPicture.asset("assets/icons/google.svg"),
-                                SizedBox(width: Responsive.w(1.5)),
-                                Text("Continue With Google"),
+                                const Expanded(child: Divider()),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                  ),
+                                  child: const Text("OR"),
+                                ),
+                                const Expanded(child: Divider()),
                               ],
                             ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: Responsive.h(1)),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: AppColor.facebokkColor,
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: Row(
-                              children: [
-                                SizedBox(width: Responsive.w(20)),
-                                SvgPicture.asset("assets/icons/facebook.svg"),
-                                SizedBox(width: Responsive.w(1)),
-                                Text("Continue With Facebook"),
-                              ],
+                            SizedBox(height: Responsive.h(2)),
+
+                            // Login Redirect
+                            GestureDetector(
+                              onTap: () => Navigator.pushReplacementNamed(
+                                context,
+                                RoutesName.login,
+                              ),
+                              child: Text(
+                                "Already have an account? Login here",
+                                style: GoogleFonts.rethinkSans(
+                                  color: AppColor.primaryColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ),
-                      SizedBox(height: Responsive.h(2)),
-                      GestureDetector(
-                        onTap: () => Navigator.pushReplacementNamed(context, RoutesName.login),
-                        child: Text("Have An Account? Login Here")),
-                    ],
+                      );
+                    },
                   ),
                 ),
               ),
@@ -256,154 +308,36 @@ class Sginupview extends StatelessWidget {
       ),
     );
   }
+
+  InputDecoration _inputDecoration({
+    required String iconPath,
+    required String hint,
+  }) {
+    return InputDecoration(
+      prefixIcon: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: SvgPicture.asset(iconPath, width: 20, height: 20),
+      ),
+      hintText: hint,
+      hintStyle: GoogleFonts.rethinkSans(color: AppColor.filletextdColor),
+      filled: true,
+      fillColor: AppColor.filledColor,
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColor.filledColor),
+        borderRadius: BorderRadius.circular(22),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColor.filledColor),
+        borderRadius: BorderRadius.circular(22),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red.shade300),
+        borderRadius: BorderRadius.circular(22),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red.shade500),
+        borderRadius: BorderRadius.circular(22),
+      ),
+    );
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:app/res/components/auth_button.dart';
-// import 'package:app/utils/routes/routes_name.dart';
-// import 'package:app/utils/routes/utils.dart';
-// import 'package:flutter/gestures.dart';
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-
-// import '../viewmodel/auth_viewmodel.dart';
-
-// class Sginupview extends StatefulWidget {
-//   const Loginview({super.key});
-
-//   @override
-//   State<Loginview> createState() => _LoginviewState();
-// }
-
-// class _LoginviewState extends State<Loginview> {
-//   final ValueNotifier<bool> _obsecurePassword = ValueNotifier<bool>(true);
-//   TextEditingController emailController = TextEditingController();
-//   TextEditingController passwordController = TextEditingController();
-//   FocusNode emailFoucsNode = FocusNode();
-//   FocusNode passwordFoucsNode = FocusNode();
-//   FocusNode sumbitFoucsNode = FocusNode();
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     emailController.dispose();
-//     passwordController.dispose();
-//     passwordFoucsNode.dispose();
-//     emailFoucsNode.dispose();
-//     _obsecurePassword.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final authViewmodel = Provider.of<AuthViewmodel>(context);
-//     final height = MediaQuery.of(context).size.height * 1;
-//     return Scaffold(
-//       body: Padding(
-//         padding: const EdgeInsets.symmetric(vertical: 8.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: [
-//             TextFormField(
-//               controller: emailController,
-//               focusNode: emailFoucsNode,
-//               keyboardType: TextInputType.emailAddress,
-//               decoration: InputDecoration(
-//                   hintText: "Email",
-//                   label: Text("Email"),
-//                   prefix: Icon(Icons.alternate_email)),
-//               onFieldSubmitted: (value) {
-//                 Utils.fieldFoucsChange(
-//                     context, emailFoucsNode, passwordFoucsNode);
-//               },
-//             ),
-//             SizedBox(height: height * 0.1),
-//             ValueListenableBuilder(
-//               valueListenable: _obsecurePassword,
-//               builder: (context, value, child) {
-//                 return TextFormField(
-//                   controller: passwordController,
-//                   focusNode: passwordFoucsNode,
-//                   obscureText: _obsecurePassword.value,
-//                   //  value,
-//                   obscuringCharacter: "*",
-//                   decoration: InputDecoration(
-//                     hintText: "Password",
-//                     label: Text("Password"),
-//                     prefix: Icon(Icons.lock),
-//                     suffixIcon: InkWell(
-//                         onTap: () {
-//                           _obsecurePassword.value = !_obsecurePassword.value;
-//                         },
-//                         child: Icon(_obsecurePassword.value
-//                             ? Icons.visibility_off
-//                             : Icons.visibility)),
-//                   ),
-//                   // onFieldSubmitted: (valuw) {
-//                   //   Utils.fieldFoucsChange(
-//                   //       context, passwordFoucsNode, sumbitFoucsNode);
-//                   // },
-//                 );
-//               },
-//             ),
-//             SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
-//             AuthButton(
-              
-//                 buttontext: "Login",
-//                 loading: authViewmodel.loading,
-//                 onPress: () {
-//                   if (emailController.text.isEmpty) {
-//                     Utils.flushBarErrorMassage(
-//                         "Please Enter Email First", context);
-//                   } else if (passwordController.text.isEmpty) {
-//                     Utils.flushBarErrorMassage(
-//                         "Please Enter Password First", context);
-//                   } else if (passwordController.text.length < 8) {
-//                     Utils.flushBarErrorMassage(
-//                         "Please Enter 8 digeits", context);
-//                   } else {
-//                     Map<String, String> headr = {"x-api-key": "reqres-free-v1"};
-//                     Map data = {
-//                       'email': emailController.text.toString(),
-//                       'password': passwordController.text.toString()
-//                     };
-//                     authViewmodel.loginApi(data, headr, context);
-//                   }
-//                 }), Text.rich(textAlign: TextAlign.center,
-//                   TextSpan(
-//                     text: "Already have an account?",
-//                     style: TextStyle(color: Colors.black, fontSize: 16),
-//                     children: [
-//                       TextSpan(
-//                         text: "Login",
-//                         style: TextStyle(
-//                             color: Colors.blue,
-//                             fontSize: 16,
-//                             fontWeight: FontWeight.bold),
-//                         recognizer: TapGestureRecognizer()
-//                           ..onTap = () {
-//                             Navigator.pushNamed(context, RoutesName.login);
-//                           },
-//                       )
-//                     ],
-//                   )),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
