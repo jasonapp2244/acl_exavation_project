@@ -1,6 +1,4 @@
 import 'package:acl/utils/routes/routes_name.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -55,13 +53,13 @@ class LoginViewModel extends ChangeNotifier {
   bool validateForm(String email, String password) {
     String? emailError = validateEmail(email);
     String? passwordError = validatePassword(password);
-    
+
     if (emailError != null || passwordError != null) {
       _errorMessage = emailError ?? passwordError;
       notifyListeners();
       return false;
     }
-    
+
     _errorMessage = null;
     notifyListeners();
     return true;
@@ -83,7 +81,6 @@ class LoginViewModel extends ChangeNotifier {
     }
 
     _isLoading = true;
-    _errorMessage = null;
     notifyListeners();
 
     try {
@@ -91,11 +88,11 @@ class LoginViewModel extends ChangeNotifier {
         email: email.trim(),
         password: password,
       );
-      
+
       // Clear any previous errors on successful login
       _errorMessage = null;
       notifyListeners();
-      
+
       Navigator.pushReplacementNamed(context, RoutesName.main);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -117,11 +114,38 @@ class LoginViewModel extends ChangeNotifier {
         case 'network-request-failed':
           _errorMessage = 'Network error. Please check your connection.';
           break;
+        case 'invalid-credential':
+        case 'invalid-credentials':
+          _errorMessage =
+              'Invalid email or password. Please check your credentials.';
+          break;
+        case 'operation-not-allowed':
+          _errorMessage = 'Email/password sign in is not enabled.';
+          break;
+
         default:
-          _errorMessage = 'Login failed: ${e.message}';
+          // Check if the error message contains specific keywords
+          if (e.message?.toLowerCase().contains('credential') == true ||
+              e.message?.toLowerCase().contains('incorrect') == true ||
+              e.message?.toLowerCase().contains('malformed') == true ||
+              e.message?.toLowerCase().contains('expired') == true) {
+            _errorMessage =
+                'Invalid email or password. Please check your credentials.';
+          } else {
+            _errorMessage = 'Login failed: ${e.message}';
+          }
       }
     } catch (e) {
-      _errorMessage = 'An unexpected error occurred. Please try again.';
+      // Check if it's a general credential error
+      if (e.toString().toLowerCase().contains('credential') ||
+          e.toString().toLowerCase().contains('incorrect') ||
+          e.toString().toLowerCase().contains('malformed') ||
+          e.toString().toLowerCase().contains('expired')) {
+        _errorMessage =
+            'Invalid email or password. Please check your credentials.';
+      } else {
+        _errorMessage = 'An unexpected error occurred. Please try again.';
+      }
     } finally {
       _isLoading = false;
       notifyListeners();

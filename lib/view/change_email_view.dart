@@ -173,7 +173,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                   Spacer(),
 
                   AuthButton(
-                    buttontext: 'Save',
+                    buttonText: 'Save',
                     loading: changeEmail.isLoading,
                     onPress: changeEmail.isLoading
                         ? () {}

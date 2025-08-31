@@ -1,11 +1,9 @@
-import 'package:acl/utils/routes/routes_name.dart';
 import 'package:acl/view/homeview.dart';
 import 'package:acl/view/manage_trucks.dart';
 import 'package:acl/view/setting_view.dart';
 import 'package:acl/view/truck_log_view.dart';
 import 'package:acl/view/widgets/custom_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:responsive_navigation_bar/responsive_navigation_bar.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

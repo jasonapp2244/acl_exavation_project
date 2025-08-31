@@ -43,9 +43,12 @@ import 'package:acl/controller/login_view_model.dart';
 import 'package:acl/controller/logout_view_model.dart';
 import 'package:acl/controller/settings_reset_password_model.dart';
 import 'package:acl/controller/signup_view_model.dart';
+import 'package:acl/controller/truck_driver_model_view.dart';
 import 'package:acl/controller/user_profile_controller.dart';
 import 'package:acl/utils/routes/routes.dart';
 import 'package:acl/utils/routes/routes_name.dart';
+import 'package:acl/firebase_options.dart';
+import 'package:acl/view/add_truck_entery_view.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,7 +56,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     MultiProvider(
@@ -65,6 +68,10 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ChangePasswordModel()),
         ChangeNotifierProvider(create: (_) => ChangeEmailModelView()),
         ChangeNotifierProvider(create: (_) => UserProfileController()),
+        ChangeNotifierProvider(
+          create: (_) => TruckEntryProvider(),
+          child: AddTruckEnteryView(),
+        ),
       ],
       child: const MyApp(),
     ),

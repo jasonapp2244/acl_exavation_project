@@ -38,7 +38,8 @@ class Routes {
       case RoutesName.manageTrucks:
         return MaterialPageRoute(builder: (_) => ManageTrucks());
       case RoutesName.addTruckEntry:
-        return MaterialPageRoute(builder: (_) => AddTruckEnteryView());
+        print('Navigating to AddTruckEnteryView');
+        return MaterialPageRoute(builder: (_) => const AddTruckEnteryView());
       case RoutesName.settings:
         return MaterialPageRoute(builder: (_) => SettingView());
       case RoutesName.notifications:

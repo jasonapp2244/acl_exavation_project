@@ -311,7 +311,7 @@ class _EditProfileViewState extends State<EditProfileView> {
 
                   // Save Button
                   AuthButton(
-                    buttontext: 'Save Changes',
+                    buttonText: 'Save Changes',
                     loading: profileController.isLoading,
                     onPress: profileController.isLoading
                         ? () {}

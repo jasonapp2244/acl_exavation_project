@@ -5,7 +5,6 @@ import 'package:acl/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -38,11 +37,11 @@ class _SignupViewState extends State<SignupView> {
       backgroundColor: AppColor.secondaryColor,
       body: Padding(
         padding: const EdgeInsets.all(0.0),
-        child: Column(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Container(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                constraints: BoxConstraints(maxHeight: Responsive.h(50)),
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   gradient: RadialGradient(
@@ -75,11 +74,9 @@ class _SignupViewState extends State<SignupView> {
                   ],
                 ),
               ),
-            ),
 
-            Expanded(
-              flex: 3,
-              child: Container(
+              Container(
+                constraints: BoxConstraints(maxHeight: Responsive.h(60)),
                 decoration: BoxDecoration(
                   color: AppColor.whiteColor,
                   borderRadius: BorderRadius.circular(22),
@@ -302,8 +299,8 @@ class _SignupViewState extends State<SignupView> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

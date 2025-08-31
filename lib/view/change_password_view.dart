@@ -292,7 +292,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
 
                   Spacer(),
                   AuthButton(
-                    buttontext: 'Save',
+                    buttonText: 'Save',
                     loading: resetModel.isLoading,
                     onPress: resetModel.isLoading
                         ? () {}

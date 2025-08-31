@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,7 +22,8 @@ class SignupViewModel extends ChangeNotifier {
 
   bool _isValidName(String name) {
     // Name should be at least 2 characters and contain only letters, spaces, and common name characters
-    return name.trim().length >= 2 && RegExp(r'^[a-zA-Z\s\-\.]+$').hasMatch(name.trim());
+    return name.trim().length >= 2 &&
+        RegExp(r'^[a-zA-Z\s\-\.]+$').hasMatch(name.trim());
   }
 
   String? validateName(String name) {
@@ -67,13 +66,13 @@ class SignupViewModel extends ChangeNotifier {
     String? nameError = validateName(userName);
     String? emailError = validateEmail(email);
     String? passwordError = validatePassword(password);
-    
+
     if (nameError != null || emailError != null || passwordError != null) {
       _errorMessage = nameError ?? emailError ?? passwordError;
       notifyListeners();
       return false;
     }
-    
+
     _errorMessage = null;
     notifyListeners();
     return true;
@@ -100,8 +99,8 @@ class SignupViewModel extends ChangeNotifier {
       // Create user in Firebase Authentication
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-            email: email.trim(), 
-            password: password
+            email: email.trim(),
+            password: password,
           );
 
       print('User created successfully with UID: ${userCredential.user?.uid}');
@@ -122,16 +121,16 @@ class SignupViewModel extends ChangeNotifier {
           });
 
       print('User data saved to Firestore successfully');
-      
+
       // Clear any previous errors on successful signup
       _errorMessage = null;
       notifyListeners();
-      
     } on FirebaseAuthException catch (e) {
       print('FirebaseAuthException: ${e.code} - ${e.message}');
       switch (e.code) {
         case 'weak-password':
-          _errorMessage = 'The password provided is too weak. Please choose a stronger password.';
+          _errorMessage =
+              'The password provided is too weak. Please choose a stronger password.';
           break;
         case 'email-already-in-use':
           _errorMessage = 'An account already exists with this email address.';
@@ -140,7 +139,8 @@ class SignupViewModel extends ChangeNotifier {
           _errorMessage = 'Invalid email address.';
           break;
         case 'operation-not-allowed':
-          _errorMessage = 'Email/password accounts are not enabled. Please contact support.';
+          _errorMessage =
+              'Email/password accounts are not enabled. Please contact support.';
           break;
         case 'network-request-failed':
           _errorMessage = 'Network error. Please check your connection.';

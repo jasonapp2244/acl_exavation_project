@@ -113,12 +113,26 @@ class _LoginviewState extends State<Loginview> {
                                     color: Colors.red.shade200,
                                   ),
                                 ),
-                                child: Text(
-                                  loginModel.errorMessage!,
-                                  style: GoogleFonts.rethinkSans(
-                                    color: Colors.red.shade700,
-                                    fontSize: 14,
-                                  ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        loginModel.errorMessage!,
+                                        style: GoogleFonts.rethinkSans(
+                                          color: Colors.red.shade700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => loginModel.clearError(),
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.red.shade700,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
 
@@ -126,10 +140,8 @@ class _LoginviewState extends State<Loginview> {
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
                               onChanged: (value) {
-                                // Clear error when user starts typing
-                                if (loginModel.errorMessage != null) {
-                                  loginModel.clearError();
-                                }
+                                // Only clear validation errors, not authentication errors
+                                // Authentication errors should persist until user tries again
                               },
                               validator: (value) {
                                 return loginModel.validateEmail(value ?? '');
@@ -178,10 +190,8 @@ class _LoginviewState extends State<Loginview> {
                               controller: passwordController,
                               obscureText: true,
                               onChanged: (value) {
-                                // Clear error when user starts typing
-                                if (loginModel.errorMessage != null) {
-                                  loginModel.clearError();
-                                }
+                                // Only clear validation errors, not authentication errors
+                                // Authentication errors should persist until user tries again
                               },
                               validator: (value) {
                                 return loginModel.validatePassword(value ?? '');
@@ -247,6 +257,8 @@ class _LoginviewState extends State<Loginview> {
                               onTap: loginModel.isLoading
                                   ? null
                                   : () async {
+                                      // Clear any previous errors when user tries to login again
+                                      loginModel.clearError();
                                       if (_formKey.currentState!.validate()) {
                                         await loginModel.login(
                                           emailController.text,
@@ -442,7 +454,7 @@ void _showForgotPasswordBottomSheet(BuildContext context) {
               ),
               SizedBox(height: Responsive.h(2)),
               AuthButton(
-                buttontext: "Send Reset Link",
+                buttonText: "Send Reset Link",
                 onPress: () async {
                   if (_formKey.currentState!.validate()) {
                     await forgotPasswordModel.forgotPassword(
