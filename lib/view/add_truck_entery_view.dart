@@ -138,7 +138,7 @@ class AddTruckEnteryView extends StatelessWidget {
                                     : () async {
                                         try {
                                           await truckProvider.saveTruckEntry(
-                                            recordTimeIn: false,
+                                            recordTimeIn: true,
                                           );
                                           ScaffoldMessenger.of(
                                             context,

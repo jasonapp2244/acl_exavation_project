@@ -1,4 +1,6 @@
+import 'package:acl/controller/truck_driver_model_view.dart';
 import 'package:acl/controller/user_profile_controller.dart';
+import 'package:acl/model/truck_driver_record_model.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/auth_button.dart';
 import 'package:acl/res/components/responsive.dart';
@@ -7,6 +9,7 @@ import 'package:acl/view/widgets/custom_driver_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Homeview extends StatefulWidget {
@@ -54,6 +57,7 @@ class _HomeviewState extends State<Homeview> {
 
   @override
   Widget build(BuildContext context) {
+    var truckProvider = Provider.of<TruckEntryProvider>(context, listen: false);
     Responsive.init(context);
     return SafeArea(
       child: Scaffold(
@@ -363,37 +367,39 @@ class _HomeviewState extends State<Homeview> {
                   ),
                 ),
 
-                Expanded(
-                  child: Container(
-                    height: 170,
-                    width: double.infinity,
-                    child: ListView.builder(
-                      itemCount: 13,
-                      itemBuilder: (context, index) {
-                        return CustomTruckEntryCardWidget(
-                          truckNumber: "TRK-${100 + index}",
-                          status: index % 2 == 0 ? "In Progress" : "Completed",
-                          timeIn: "08:0${index} AM",
-                          driverName: index % 2 == 0
-                              ? "Abdullah Khan"
-                              : "John Doe",
-                          driverRole: index % 2 == 0 ? "Driver" : "Assistant",
-                          onTimeOutPressed: () {
-                            // Example action
-                            print(
-                              "Time Out pressed for truck TRK-${100 + index}",
-                            );
-                          },
-                          onViewLogsPressed: () {
-                            // Example action
-                            print(
-                              "View Logs pressed for truck TRK-${100 + index}",
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
+                StreamBuilder<List<TruckDriverRecordModel>>(
+                  stream: truckProvider.truckEntriesStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text("Error: ${snapshot.error}"));
+                    }
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text("No truck entries found."),
+                      );
+                    }
+                    final entries = snapshot.data!;
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: entries.length,
+                        itemBuilder: (context, index) {
+                          final truck = entries[index];
+                          return CustomTruckEntryCardWidget(
+                            truckNumber: truck.truckNumber,
+                            status: truck.status,
+                            timeIn: truck.timeIn!,
+                            driverName: truck.driverName,
+                            driverRole: truck.driverRole,
+                            onTimeOutPressed: () {},
+                            onViewLogsPressed: () {},
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

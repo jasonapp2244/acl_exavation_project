@@ -230,7 +230,6 @@ class TruckLogView extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          Text("On Site"),
                                         ],
                                       ),
                                       SizedBox(height: Responsive.h(1)),

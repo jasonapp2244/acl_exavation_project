@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class Utils {
   static tosatMassage(String massage) {
@@ -52,6 +53,15 @@ class Utils {
       if (part.isNotEmpty) initials += part[0].toUpperCase();
     }
     return initials;
+  }
+}
+
+String formatTime(var timeIn) {
+  try {
+    DateTime dateTime = DateTime.parse(timeIn);
+    return DateFormat.jm().format(dateTime); // outputs like 08:30 AM
+  } catch (e) {
+    return "--:--"; // fallback if parsing fails
   }
 }
 

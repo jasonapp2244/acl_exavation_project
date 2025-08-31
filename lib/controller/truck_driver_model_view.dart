@@ -10,6 +10,7 @@ class TruckEntryProvider extends ChangeNotifier {
   String truckNumber = '';
   String additionalNotes = '';
   String licensePlatePhotoPath = '';
+  String status = '';
   DateTime? timeIn;
   bool? isTimeInLoading;
   List<TruckDriverRecordModel> truckEntries = [];
@@ -67,7 +68,7 @@ class TruckEntryProvider extends ChangeNotifier {
             'licensePlatePhoto': licensePlatePhotoPath,
             'timeIn': timeIn ?? null,
             'timestamp': FieldValue.serverTimestamp(),
-            'status': 'onsite',
+            'status': status.isNotEmpty ? status : 'On Site',
           });
 
       driverName = '';
@@ -88,29 +89,21 @@ class TruckEntryProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchTruckEntries() async {
+  Stream<List<TruckDriverRecordModel>> truckEntriesStream() {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception("User not logged in");
 
-    isLoading = true;
-    notifyListeners();
-
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .collection('truck_entries')
-          .orderBy('timestamp', descending: true)
-          .get();
-
-      truckEntries = snapshot.docs
-          .map((doc) => TruckDriverRecordModel.fromFirestore(doc))
-          .toList();
-    } catch (e) {
-      print("Error fetching truck entries: $e");
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('truck_entries')
+        .where('status', isEqualTo: 'On Site') // corrected
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => TruckDriverRecordModel.fromFirestore(doc))
+              .toList(),
+        );
   }
 }
