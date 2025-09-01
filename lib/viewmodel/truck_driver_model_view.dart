@@ -98,7 +98,7 @@ class TruckEntryViewModel extends ChangeNotifier {
     }
   }
 
-  Stream<List<TruckDriverRecordModel>> truckEntriesStream() {
+  Stream<List<TruckDriverRecordModel>> truckEntriesStream(String selectStatus) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception("User not logged in");
 
@@ -106,7 +106,7 @@ class TruckEntryViewModel extends ChangeNotifier {
         .collection('users')
         .doc(user.uid)
         .collection('truck_entries')
-        .where('status', isEqualTo: 'On Site') // corrected
+        .where('status', isEqualTo: selectStatus) // corrected
         .where('isActive', isEqualTo: 1)
         .orderBy('timestamp', descending: true)
         .snapshots()
@@ -210,5 +210,41 @@ class TruckEntryViewModel extends ChangeNotifier {
           .map((doc) => TruckDriverRecordModel.fromFirestore(doc))
           .toList();
     });
+  }
+
+  Future<void> recordTimeIn(String docId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('truck_entries')
+          .doc(docId)
+          .update({
+            'timeIn': DateTime.now(),
+            'status': 'On Site',
+            'isActive': 1,
+          });
+    } catch (e) {
+      debugPrint("Error recording Time In: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> recordTimeOut(String docId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('truck_entries')
+          .doc(docId)
+          .update({
+            'timeOut': DateTime.now(),
+            'status': 'Departed',
+            'isActive': 0,
+          });
+    } catch (e) {
+      debugPrint("Error recording Time Out: $e");
+      rethrow;
+    }
   }
 }

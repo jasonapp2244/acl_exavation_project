@@ -1,4 +1,5 @@
 import 'package:acl/utils/routes/utils.dart';
+import 'package:acl/view/widgets/custom_filter_dropdown.dart';
 import 'package:acl/viewmodel/truck_driver_model_view.dart';
 import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
 import 'package:acl/viewmodel/user_profile_model_view.dart';
@@ -23,6 +24,7 @@ class Homeview extends StatefulWidget {
 }
 
 class _HomeviewState extends State<Homeview> {
+  String _selectedStatus = 'On Site';
   @override
   void initState() {
     super.initState();
@@ -46,12 +48,17 @@ class _HomeviewState extends State<Homeview> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColor.secondaryColor,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [_buildHeaderSection(context, truckProvider)],
-          ),
+        body: ListView(
+          children: [
+            Column(
+              children: [
+                _buildHeaderSection(context, truckProvider),
+
+                _buildBottomSheet(context, truckProvider),
+              ],
+            ),
+          ],
         ),
-        bottomSheet: _buildBottomSheet(context, truckProvider),
       ),
     );
   }
@@ -278,7 +285,7 @@ class _HomeviewState extends State<Homeview> {
     TruckEntryViewModel truckProvider,
   ) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.35,
+      //height: MediaQuery.of(context).size.height * 0.35,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -291,23 +298,38 @@ class _HomeviewState extends State<Homeview> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Active Trucks On-Site",
-              style: GoogleFonts.rethinkSans(
-                fontWeight: FontWeight.bold,
-                fontSize: Responsive.textScaleFactor * 14,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Active Trucks On-Site",
+                  style: GoogleFonts.rethinkSans(
+                    fontWeight: FontWeight.bold,
+                    fontSize: Responsive.textScaleFactor * 14,
+                  ),
+                ),
+                CustomFilterDropdown(
+                  options: ["On Site", "Departed"],
+                  initialValue: _selectedStatus,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedStatus = value;
+                    });
+                  },
+                ),
+              ],
             ),
-            _buildActiveTrucksList(truckProvider),
+
+            _buildActiveTrucksList(truckProvider,_selectedStatus),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildActiveTrucksList(TruckEntryViewModel truckProvider) {
+  Widget _buildActiveTrucksList(TruckEntryViewModel truckProvider, String selectedStatus) {
     return StreamBuilder<List<TruckDriverRecordModel>>(
-      stream: truckProvider.truckEntriesStream(),
+      stream: truckProvider.truckEntriesStream( selectedStatus),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -322,35 +344,33 @@ class _HomeviewState extends State<Homeview> {
         }
 
         final entries = snapshot.data!;
-        return Expanded(
-          child: ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, index) {
-              final truck = entries[index];
-              return CustomTruckEntryCardWidget(
-                truckNumber: truck.truckNumber,
-                status: truck.status,
-                timeIn: truck.timeIn ?? DateTime.now(),
-                driverName: truck.driverName,
-                driverRole: truck.driverRole,
-                onTimeOutPressed: () {},
-                onViewLogsPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider(
-                        create: (context) => TruckLogDetailController(),
-                        child: TruckLogDetailView(
-                          truckNumber: truck.truckNumber,
-                        ),
-                      ),
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: entries.length,
+          itemBuilder: (context, index) {
+            final truck = entries[index];
+            return CustomTruckEntryCardWidget(
+            id : truck.id,
+              truckNumber: truck.truckNumber,
+              status: truck.status,
+              timeIn: truck.timeIn,
+              driverName: truck.driverName,
+              driverRole: truck.driverRole,
+              onTimeOutPressed: () {},
+              onViewLogsPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (context) => TruckLogDetailController(),
+                      child: TruckLogDetailView(truckNumber: truck.truckNumber),
                     ),
-                  );
-                },
-                isActive: truck.isActive,
-              );
-            },
-          ),
+                  ),
+                );
+              },
+              isActive: truck.isActive,
+            );
+          },
         );
       },
     );

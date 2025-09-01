@@ -78,12 +78,21 @@ class Utils {
   }
 }
 
-String formatTime(var timeIn) {
+String formatTime(dynamic timeIn) {
   try {
-    DateTime dateTime = DateTime.parse(timeIn);
-    return DateFormat.jm().format(dateTime); // outputs like 08:30 AM
+    DateTime dateTime;
+
+    if (timeIn is String) {
+      dateTime = DateTime.parse(timeIn); // parse string
+    } else if (timeIn is DateTime) {
+      dateTime = timeIn; // already DateTime
+    } else {
+      return "--:--"; // unsupported type
+    }
+
+    return DateFormat.jm().format(dateTime); // e.g. 10:51 PM
   } catch (e) {
-    return "--:--"; // fallback if parsing fails
+    return "--:--";
   }
 }
 

@@ -12,12 +12,13 @@ import 'package:intl/intl.dart';
 class CustomTruckEntryCardWidget extends StatelessWidget {
   final String truckNumber;
   final String status;
-  final DateTime timeIn;
+  final DateTime? timeIn;
   final String driverName;
   final String driverRole;
   final VoidCallback onTimeOutPressed;
   final VoidCallback onViewLogsPressed;
   final int? isActive;
+  final String? id;
 
   const CustomTruckEntryCardWidget({
     super.key,
@@ -29,6 +30,7 @@ class CustomTruckEntryCardWidget extends StatelessWidget {
     required this.onTimeOutPressed,
     required this.onViewLogsPressed,
     this.isActive,
+    this.id
   });
 
   @override
@@ -96,8 +98,7 @@ class CustomTruckEntryCardWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    formatTime(timeIn) ??
-                        DateFormat.jm().format(DateTime.now()),
+                    formatTime(timeIn),
                     style: GoogleFonts.rethinkSans(
                       fontWeight: FontWeight.normal,
                       fontSize: Responsive.textScaleFactor * 10,
@@ -197,7 +198,13 @@ class CustomTruckEntryCardWidget extends StatelessWidget {
           ),
 
           SizedBox(height: Responsive.h(1)),
-          CustomSwipeButton(),
+          CustomSwipeButton(
+            id: id,
+            
+            buttonText: timeIn == null
+                ? 'Swipe to Time In'
+                : 'Swipe to Time Out',
+          ),
         ],
       ),
     );

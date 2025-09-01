@@ -1,21 +1,27 @@
+import 'package:acl/viewmodel/truck_driver_model_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CustomSwipeButton extends StatefulWidget {
   final VoidCallback? onSwipeComplete;
+  final String? id;
   final String buttonText;
   final Color backgroundColor;
   final Color fillColor;
   final Color thumbColor;
+  String? isTimeIn;
 
-  const CustomSwipeButton({
+  CustomSwipeButton({
     super.key,
     this.onSwipeComplete,
     this.buttonText = "Swipe to Time Out",
     this.backgroundColor = const Color(0xFF4EEED0),
     this.fillColor = Colors.white,
     this.thumbColor = const Color(0x3D4EEED0),
+    this.isTimeIn,
+    this.id,
   });
 
   @override
@@ -31,7 +37,10 @@ class _CustomSwipeButtonState extends State<CustomSwipeButton> {
     final double buttonWidth =
         MediaQuery.of(context).size.width - 32; // padding
     final double thumbWidth = 50;
-
+    final truckProvider = Provider.of<TruckEntryViewModel>(
+      context,
+      listen: false,
+    );
     return Center(
       child: Container(
         width: double.infinity,
@@ -71,6 +80,12 @@ class _CustomSwipeButtonState extends State<CustomSwipeButton> {
                       if (_dragValue >= 0.95) {
                         _completed = true;
                         widget.onSwipeComplete?.call();
+
+                        if (widget.buttonText == 'Swipe to Time In') {
+                          truckProvider.recordTimeIn(widget.id ?? '');
+                        } else {
+                          truckProvider.recordTimeOut(widget.id ?? '');
+                        }
 
                         Future.delayed(const Duration(milliseconds: 500), () {
                           ScaffoldMessenger.of(context).showSnackBar(
