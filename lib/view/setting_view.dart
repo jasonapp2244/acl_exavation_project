@@ -20,7 +20,6 @@ class _SettingViewState extends State<SettingView> {
   @override
   void initState() {
     super.initState();
-    // Fetch user profile data when view loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<UserProfileController>(
         context,
@@ -33,317 +32,271 @@ class _SettingViewState extends State<SettingView> {
   Widget build(BuildContext context) {
     final logoutVM = Provider.of<LogoutViewModel>(context);
     Responsive.init(context);
+
     return Scaffold(
       backgroundColor: AppColor.secondaryColor,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: Column(
-            children: [
-              Container(
-                height: Responsive.h(10),
-                width: double.infinity,
+        child: Column(
+          children: [
+            _buildHeader(),
+            Expanded(child: _buildBody(logoutVM)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// ------------------- Header -------------------
+  Widget _buildHeader() {
+    return Container(
+      height: Responsive.h(10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: const RadialGradient(
+          center: Alignment.topRight,
+          radius: 1.2,
+          focalRadius: 0.1,
+          colors: [Color(0xFF4EEED0), Color(0xFF111B19)],
+        ),
+      ),
+      child: Padding(
+        padding: Responsive.padding(left: 4, right: 4, top: 2),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Settings",
+              style: GoogleFonts.rethinkSans(
+                color: AppColor.whiteColor,
+                fontWeight: FontWeight.bold,
+                fontSize: Responsive.textScaleFactor * 26,
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColor.whiteColor.withOpacity(0.2),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SvgPicture.asset("assets/icons/notificsation.svg"),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// ------------------- Body -------------------
+  Widget _buildBody(LogoutViewModel logoutVM) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColor.whiteColor,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(26),
+          topRight: Radius.circular(26),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Consumer<UserProfileController>(
+          builder: (context, profileController, child) {
+            return Column(
+              children: [
+                _buildProfileAvatar(profileController),
+                _buildProfileInfo(profileController),
+                SizedBox(height: Responsive.h(2)),
+                _buildSettingsOptions(),
+                SizedBox(height: Responsive.h(1)),
+                _buildLogoutButton(logoutVM),
+                SizedBox(height: Responsive.h(1)),
+                _buildAppVersion(),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  /// ------------------- Profile Avatar -------------------
+  Widget _buildProfileAvatar(UserProfileController controller) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, RoutesName.editProfile),
+      child: Container(
+        width: 110,
+        height: 109,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          border: Border.all(color: Colors.black.withOpacity(0.07), width: 1),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: Center(
+                child: Text(
+                  controller.getInitials(controller.name.toString()),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 40,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: Container(
+                width: 24,
+                height: 24,
                 decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    center: Alignment.topRight,
-                    radius: 1.2,
-                    focalRadius: 0.1,
-                    colors: [Color(0xFF4EEED0), Color(0xFF111B19)],
-                  ),
+                  shape: BoxShape.circle,
+                  color: AppColor.primaryColor,
                 ),
-                child: Padding(
-                  padding: Responsive.padding(left: 4, right: 4, top: 2),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Settings",
-                        style: GoogleFonts.rethinkSans(
-                          color: AppColor.whiteColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: Responsive.textScaleFactor * 26,
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColor.whiteColor.withValues(alpha: 0.2),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: SvgPicture.asset(
-                            "assets/icons/notificsation.svg",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                child: const Icon(Icons.edit, size: 14, color: Colors.black),
               ),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColor.whiteColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(26),
-                      topRight: Radius.circular(26),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Consumer<UserProfileController>(
-                      builder: (context, profileController, child) {
-                        return Column(
-                          spacing: 5,
-                          children: [
-                            GestureDetector(
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                RoutesName.editProfile,
-                              ),
-                              child: Container(
-                                width: 110,
-                                height: 109,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.black.withOpacity(0.07),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    // Main content area
-                                    Container(
-                                      width: 100,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 40,
-                                          ),
-                                          profileController.getInitials(
-                                            profileController.name.toString(),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    // Edit icon in bottom right corner
-                                    Positioned(
-                                      bottom: 8,
-                                      right: 8,
-                                      child: Container(
-                                        width: 24,
-                                        height: 24,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: AppColor.primaryColor,
-                                        ),
-                                        child: Icon(
-                                          Icons.edit,
-                                          size: 14,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-                            // Profile Section with Edit Icon
-                            Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.all(16),
+  /// ------------------- Profile Info -------------------
+  Widget _buildProfileInfo(UserProfileController controller) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Text(
+            controller.name.isNotEmpty ? controller.name : "Loading...",
+            style: GoogleFonts.rethinkSans(
+              fontSize: Responsive.textScaleFactor * 20,
+              fontWeight: FontWeight.bold,
+              color: AppColor.textColor,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            controller.email.isNotEmpty ? controller.email : "Loading...",
+            style: GoogleFonts.rethinkSans(
+              fontSize: Responsive.textScaleFactor * 14,
+              fontWeight: FontWeight.normal,
+              color: AppColor.filletextdColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              profileController.name.isNotEmpty
-                                                  ? profileController.name
-                                                  : "Loading...",
-                                              style: GoogleFonts.rethinkSans(
-                                                fontSize:
-                                                    Responsive.textScaleFactor *
-                                                    20,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColor.textColor,
-                                              ),
-                                            ),
-                                            SizedBox(height: 4),
-                                            Text(
-                                              profileController.email.isNotEmpty
-                                                  ? profileController.email
-                                                  : "Loading...",
-                                              style: GoogleFonts.rethinkSans(
-                                                fontSize:
-                                                    Responsive.textScaleFactor *
-                                                    14,
-                                                fontWeight: FontWeight.normal,
-                                                color: AppColor.filletextdColor,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
+  /// ------------------- Settings Options -------------------
+  Widget _buildSettingsOptions() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColor.filledColor,
+        borderRadius: BorderRadius.circular(26),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            _buildSettingOption(
+              iconPath: "assets/icons/chnage_password.svg",
+              title: "Change Password",
+              onTap: () =>
+                  Navigator.pushNamed(context, RoutesName.changePassword),
+            ),
+            const Divider(),
+            _buildSettingOption(
+              iconPath: "assets/icons/email.svg",
+              title: "Change Email Address",
+              onTap: () => Navigator.pushNamed(context, RoutesName.changeEmail),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-                            SizedBox(height: Responsive.h(2)),
-
-                            Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: AppColor.filledColor,
-                                borderRadius: BorderRadiusDirectional.circular(
-                                  26,
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () => Navigator.pushNamed(
-                                        context,
-                                        RoutesName.changePassword,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                "assets/icons/chnage_password.svg",
-                                              ),
-                                              SizedBox(width: 12),
-                                              Text(
-                                                "Change Password",
-                                                style: GoogleFonts.rethinkSans(
-                                                  fontSize:
-                                                      Responsive
-                                                          .textScaleFactor *
-                                                      16,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SvgPicture.asset(
-                                            "assets/icons/Polygon 1.svg",
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Row(children: [Expanded(child: Divider())]),
-
-                                    GestureDetector(
-                                      onTap: () => Navigator.pushNamed(
-                                        context,
-                                        RoutesName.changeEmail,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                "assets/icons/email.svg",
-                                              ),
-                                              SizedBox(width: 12),
-                                              Text(
-                                                "Change Email Address",
-                                                style: GoogleFonts.rethinkSans(
-                                                  fontSize:
-                                                      Responsive
-                                                          .textScaleFactor *
-                                                      16,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SvgPicture.asset(
-                                            "assets/icons/Polygon 1.svg",
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: Responsive.h(1)),
-
-                            GestureDetector(
-                              onTap: () async {
-                                await logoutVM.logoutUser();
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  RoutesName.splash,
-                                );
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(26),
-                                  color: AppColor.redColor,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12.0,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "Logout",
-                                      style: GoogleFonts.rethinkSans(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColor.whiteColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: Responsive.h(1)),
-                            Text(
-                              "v1.0.0",
-                              style: GoogleFonts.rethinkSans(
-                                fontSize: Responsive.textScaleFactor * 8,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+  /// ------------------- Individual Setting Option -------------------
+  Widget _buildSettingOption({
+    required String iconPath,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                SvgPicture.asset(iconPath),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: GoogleFonts.rethinkSans(
+                    fontSize: Responsive.textScaleFactor * 16,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
+              ],
+            ),
+            SvgPicture.asset("assets/icons/Polygon 1.svg"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// ------------------- Logout Button -------------------
+  Widget _buildLogoutButton(LogoutViewModel logoutVM) {
+    return GestureDetector(
+      onTap: () async {
+        await logoutVM.logoutUser();
+        Navigator.pushReplacementNamed(context, RoutesName.splash);
+      },
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(26),
+          color: AppColor.redColor,
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 12.0),
+          child: Center(
+            child: Text(
+              "Logout",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  /// ------------------- App Version -------------------
+  Widget _buildAppVersion() {
+    return Text(
+      "v1.0.0",
+      style: GoogleFonts.rethinkSans(fontSize: Responsive.textScaleFactor * 8),
     );
   }
 }

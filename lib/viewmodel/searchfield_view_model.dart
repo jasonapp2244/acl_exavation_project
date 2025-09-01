@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class SearchTruckProvider with ChangeNotifier {
+class SearchViewModel with ChangeNotifier {
   Stream<List<TruckDriverRecordModel>> truckEntriesStream({
     String searchText = "",
   }) {

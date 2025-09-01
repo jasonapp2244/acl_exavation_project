@@ -82,6 +82,17 @@ class ChangeEmailModelView extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Validation method
+  String? validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Email address is required';
+    }
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+      return 'Please enter a valid email address';
+    }
+    return null;
+  }
+
   void clearMessages() {
     _errorMessage = null;
     _successMessage = null;

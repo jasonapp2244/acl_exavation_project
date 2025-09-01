@@ -1,36 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class CustomSwipeButton extends StatefulWidget {
-  const CustomSwipeButton({super.key});
+  final VoidCallback? onSwipeComplete;
+  final String buttonText;
+  final Color backgroundColor;
+  final Color fillColor;
+  final Color thumbColor;
+
+  const CustomSwipeButton({
+    super.key,
+    this.onSwipeComplete,
+    this.buttonText = "Swipe to Time Out",
+    this.backgroundColor = const Color(0xFF4EEED0),
+    this.fillColor = Colors.white,
+    this.thumbColor = const Color(0x3D4EEED0),
+  });
 
   @override
   State<CustomSwipeButton> createState() => _CustomSwipeButtonState();
 }
 
 class _CustomSwipeButtonState extends State<CustomSwipeButton> {
-  double _dragValue = 0.0;
+  double _dragValue = 0.0; // 0.0 → 1.0
   bool _completed = false;
 
   @override
   Widget build(BuildContext context) {
+    final double buttonWidth =
+        MediaQuery.of(context).size.width - 32; // padding
+    final double thumbWidth = 50;
+
     return Center(
       child: Container(
         width: double.infinity,
         height: 50,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(35)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(35),
+          color: widget.backgroundColor.withOpacity(0.24),
+        ),
         child: Stack(
           children: [
-            // Background
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              width: _dragValue * 320,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Colors.white, Colors.white],
-                  begin: Alignment.centerRight,
-                  end: Alignment.centerLeft,
+            // Animated white background fill
+            Align(
+              alignment: Alignment.centerRight, // fill from right → left
+              child: FractionallySizedBox(
+                widthFactor: _dragValue,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: widget.fillColor,
+                    borderRadius: BorderRadius.circular(35),
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(35),
               ),
             ),
 
@@ -38,18 +60,18 @@ class _CustomSwipeButtonState extends State<CustomSwipeButton> {
             Positioned(
               top: 5,
               bottom: 5,
-              right: _dragValue * 270,
+              right: _dragValue * (buttonWidth - thumbWidth),
               child: GestureDetector(
                 onHorizontalDragUpdate: (details) {
                   if (!_completed) {
                     setState(() {
-                      _dragValue = (_dragValue - details.delta.dx / 320).clamp(
-                        0.0,
-                        1.0,
-                      );
+                      _dragValue = (_dragValue - details.delta.dx / buttonWidth)
+                          .clamp(0.0, 1.0); // reverse for right → left
 
                       if (_dragValue >= 0.95) {
                         _completed = true;
+                        widget.onSwipeComplete?.call();
+
                         Future.delayed(const Duration(milliseconds: 500), () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -63,21 +85,21 @@ class _CustomSwipeButtonState extends State<CustomSwipeButton> {
                   }
                 },
                 onHorizontalDragEnd: (_) {
-                  if (!_completed && _dragValue < 0.7) {
+                  if (!_completed && _dragValue < 0.95) {
                     setState(() {
-                      _dragValue = 0.0;
+                      _dragValue = 0.0; // reset if not completed
                     });
                   }
                 },
                 child: Container(
-                  width: 70,
+                  width: thumbWidth,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Color(0x3D4EEED0),
+                    color: widget.thumbColor,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
-                    Icons.arrow_back, // points left
+                    Icons.arrow_back, // right → left
                     color: Colors.black,
                     size: 30,
                   ),
@@ -85,12 +107,12 @@ class _CustomSwipeButtonState extends State<CustomSwipeButton> {
               ),
             ),
 
-            // Text
+            // Center text
             Positioned.fill(
               child: Center(
                 child: Text(
-                  'Swipe to Time Out',
-                  style: TextStyle(
+                  widget.buttonText,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,

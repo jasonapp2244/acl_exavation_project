@@ -38,10 +38,10 @@
 // }
 
 import 'package:acl/viewmodel/change_email_model_view.dart';
-import 'package:acl/viewmodel/forgot_password_view_model.dart';
+import 'package:acl/viewmodel/forgot_password_model_view.dart';
 import 'package:acl/viewmodel/login_view_model.dart';
 import 'package:acl/viewmodel/logout_view_model.dart';
-import 'package:acl/viewmodel/searchfield_providerl_view_model.dart';
+import 'package:acl/viewmodel/searchfield_view_model.dart';
 import 'package:acl/viewmodel/settings_reset_password_view_model.dart';
 import 'package:acl/viewmodel/signup_view_model.dart';
 import 'package:acl/viewmodel/truck_driver_model_view.dart';
@@ -71,12 +71,12 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ChangeEmailModelView()),
         ChangeNotifierProvider(create: (_) => UserProfileController()),
         ChangeNotifierProvider(
-          create: (_) => TruckEntryProvider(),
+          create: (_) => TruckEntryViewModel(),
           child: AddTruckEnteryView(),
         ),
-        ChangeNotifierProvider(create: (_) => SearchTruckProvider()),
+        ChangeNotifierProvider(create: (_) => SearchViewModel()),
         ChangeNotifierProvider(create: (_) => TruckLogDetailController()),
-        ChangeNotifierProvider(create: (_) => TruckEntryProvider()),
+        ChangeNotifierProvider(create: (_) => TruckEntryViewModel()),
       ],
       child: const MyApp(),
     ),

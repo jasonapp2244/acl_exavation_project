@@ -1,4 +1,4 @@
-import 'package:acl/viewmodel/searchfield_providerl_view_model.dart';
+import 'package:acl/viewmodel/searchfield_view_model.dart';
 import 'package:acl/model/truck_driver_record_model.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/view/widgets/custom_driver_widget.dart';
@@ -25,10 +25,7 @@ class _SearchFieldViewState extends State<SearchFieldView> {
 
   @override
   Widget build(BuildContext context) {
-    final searchProvider = Provider.of<SearchTruckProvider>(
-      context,
-      listen: false,
-    );
+    final searchProvider = Provider.of<SearchViewModel>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -70,7 +67,7 @@ class _SearchFieldViewState extends State<SearchFieldView> {
   }
 
   // ------------------ BODY ------------------
-  Widget _buildBody(SearchTruckProvider searchProvider) {
+  Widget _buildBody(SearchViewModel searchProvider) {
     final searchText = searchByNumberController.text.trim();
 
     if (searchText.isEmpty) {
@@ -81,12 +78,14 @@ class _SearchFieldViewState extends State<SearchFieldView> {
   }
 
   // ------------------ SEARCH RESULTS ------------------
-  Widget _buildSearchResults(SearchTruckProvider searchProvider, String text) {
+  Widget _buildSearchResults(searchProvider, String text) {
     return StreamBuilder<List<TruckDriverRecordModel>>(
       stream: searchProvider.truckEntriesStream(searchText: text),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: AppColor.whiteColor),
+          );
         }
 
         if (snapshot.hasError) {

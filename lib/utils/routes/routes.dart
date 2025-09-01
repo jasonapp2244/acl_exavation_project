@@ -63,7 +63,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (_) => ChangeNotifierProvider(
             create: (context) => EditTruckEntryController(),
-            child: EditTruckEntryView(),
+            child: EditProfileView(),
           ),
         );
       case RoutesName.timeFormat:

@@ -145,10 +145,7 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
                       decoration: InputDecoration(
                         fillColor: AppColor.filledColor,
                         filled: true,
-                        prefixIcon: Icon(
-                          Icons.person,
-                          color: AppColor.filletextdColor,
-                        ),
+
                         hintText: "Driver Name",
                         hintStyle: GoogleFonts.rethinkSans(
                           color: AppColor.filletextdColor,
@@ -188,10 +185,7 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
                       decoration: InputDecoration(
                         fillColor: AppColor.filledColor,
                         filled: true,
-                        prefixIcon: Icon(
-                          Icons.local_shipping,
-                          color: AppColor.filletextdColor,
-                        ),
+
                         hintText: "Truck Number",
                         hintStyle: GoogleFonts.rethinkSans(
                           color: AppColor.filletextdColor,
@@ -228,10 +222,6 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
                         filled: true,
                         prefixIcon: Padding(
                           padding: const EdgeInsets.only(bottom: 32.0),
-                          child: Icon(
-                            Icons.note,
-                            color: AppColor.filletextdColor,
-                          ),
                         ),
                         hintText: "Additional Notes (Optional)",
                         hintStyle: GoogleFonts.rethinkSans(
@@ -256,6 +246,8 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
                       ),
                     ),
                     SizedBox(height: Responsive.h(3)),
+                    _buildLicensePlateUpload(controller),
+                    SizedBox(height: Responsive.h(2)),
 
                     // Save Button
                     AuthButton(
@@ -275,6 +267,34 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  // ------------------- License Plate Upload -------------------
+  Widget _buildLicensePlateUpload(EditTruckEntryController provider) {
+    return GestureDetector(
+      onTap: () {
+        // TODO: Implement photo picker
+        // provider.setLicensePlatePhoto(selectedPath);
+      },
+      child: Container(
+        width: double.infinity,
+        height: Responsive.h(15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          color: AppColor.filledColor,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset("assets/icons/camera-add-01.svg"),
+            Text(
+              "Upload License Plate Photo",
+              style: GoogleFonts.rethinkSans(color: AppColor.filletextdColor),
+            ),
+          ],
+        ),
       ),
     );
   }

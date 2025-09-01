@@ -1,5 +1,5 @@
 import 'package:acl/view/widgets/custom_textfield.dart';
-import 'package:acl/viewmodel/forgot_password_view_model.dart';
+import 'package:acl/viewmodel/forgot_password_model_view.dart';
 import 'package:acl/viewmodel/login_view_model.dart';
 import 'package:acl/viewmodel/logout_view_model.dart';
 import 'package:acl/res/components/app_color.dart';

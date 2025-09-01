@@ -37,7 +37,7 @@ class _HomeviewState extends State<Homeview> {
 
   @override
   Widget build(BuildContext context) {
-    final truckProvider = Provider.of<TruckEntryProvider>(
+    final truckProvider = Provider.of<TruckEntryViewModel>(
       context,
       listen: false,
     );
@@ -57,10 +57,7 @@ class _HomeviewState extends State<Homeview> {
   }
 
   // ---------------- HEADER SECTION ----------------
-  Widget _buildHeaderSection(
-    BuildContext context,
-    TruckEntryProvider truckProvider,
-  ) {
+  Widget _buildHeaderSection(BuildContext context, truckProvider) {
     return Container(
       height: 370,
       width: double.infinity,
@@ -161,7 +158,7 @@ class _HomeviewState extends State<Homeview> {
   }
 
   // ---------------- TOTAL TRUCKS CARD ----------------
-  Widget _buildTotalTrucksCard(TruckEntryProvider truckProvider) {
+  Widget _buildTotalTrucksCard(TruckEntryViewModel truckProvider) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
@@ -203,7 +200,7 @@ class _HomeviewState extends State<Homeview> {
   }
 
   // ---------------- ON-SITE AND DEPARTED TRUCKS ----------------
-  Widget _buildOnSiteDepartedRow(TruckEntryProvider truckProvider) {
+  Widget _buildOnSiteDepartedRow(TruckEntryViewModel truckProvider) {
     return Row(
       children: [
         _buildStatusCard(
@@ -278,7 +275,7 @@ class _HomeviewState extends State<Homeview> {
   // ---------------- BOTTOM SHEET ----------------
   Widget _buildBottomSheet(
     BuildContext context,
-    TruckEntryProvider truckProvider,
+    TruckEntryViewModel truckProvider,
   ) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.35,
@@ -308,12 +305,14 @@ class _HomeviewState extends State<Homeview> {
     );
   }
 
-  Widget _buildActiveTrucksList(TruckEntryProvider truckProvider) {
+  Widget _buildActiveTrucksList(TruckEntryViewModel truckProvider) {
     return StreamBuilder<List<TruckDriverRecordModel>>(
       stream: truckProvider.truckEntriesStream(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: AppColor.whiteColor),
+          );
         }
         if (snapshot.hasError) {
           return Center(child: Text("Error: ${snapshot.error}"));

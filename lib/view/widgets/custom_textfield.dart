@@ -5,21 +5,25 @@ import 'package:google_fonts/google_fonts.dart';
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
-  final String iconPath;
+  final String? iconPath;
   final bool obscureText;
   final String? Function(String?)? validator;
   final Function(String)? onChanged;
   final IconData? icon;
+  final String? initialValue;
+  int? maxLines;
 
-  const CustomTextField({
+  CustomTextField({
     super.key,
     required this.controller,
     required this.hintText,
-    required this.iconPath,
+    this.iconPath,
     this.obscureText = false,
     this.validator,
     this.onChanged,
     this.icon,
+    this.initialValue,
+    this.maxLines,
   });
 
   @override
@@ -29,17 +33,18 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       onChanged: onChanged,
       validator: validator,
+      maxLines: maxLines ?? 1,
       decoration: InputDecoration(
         prefixIcon: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: SvgPicture.asset(iconPath),
+          child: icon != null
+              ? Icon(icon, color: Colors.grey)
+              : SvgPicture.asset(iconPath ?? ''),
         ),
         hintText: hintText,
-        hintStyle: GoogleFonts.rethinkSans(
-          color: const Color(0xFFBDBDBD), // Light gray for hint
-        ),
+        hintStyle: GoogleFonts.rethinkSans(color: const Color(0xFFBDBDBD)),
         filled: true,
-        fillColor: const Color(0xFFF5F5F5), // Light background
+        fillColor: const Color(0xFFF5F5F5),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Color(0xFFF5F5F5)),
           borderRadius: BorderRadius.circular(22),

@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class TruckEntryProvider extends ChangeNotifier {
+class TruckEntryViewModel extends ChangeNotifier {
   String driverName = '';
   String truckNumber = '';
   String additionalNotes = '';
@@ -17,6 +17,9 @@ class TruckEntryProvider extends ChangeNotifier {
   List<TruckDriverRecordModel> truckEntries = [];
   bool isLoading = false;
   bool isSaveLoading = false;
+  TextEditingController driverNameController = new TextEditingController();
+  TextEditingController additionalController = new TextEditingController();
+  TextEditingController truckNumberController = new TextEditingController();
 
   void setDriverName(String name) {
     driverName = name;
@@ -38,7 +41,10 @@ class TruckEntryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveTruckEntry({bool recordTimeIn = false}) async {
+  Future<void> saveTruckEntry(
+    BuildContext context, {
+    bool recordTimeIn = false,
+  }) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception("User not logged in");
     if (driverName.isEmpty || truckNumber.isEmpty) {
@@ -78,6 +84,7 @@ class TruckEntryProvider extends ChangeNotifier {
       additionalNotes = '';
       licensePlatePhotoPath = '';
       timeIn = null;
+      Navigator.pop(context);
     } catch (e) {
       rethrow;
     } finally {
