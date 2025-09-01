@@ -357,12 +357,19 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Date: ${record.formattedDate}",
+                                  "Date: ${record.formattedDatef}",
                                   style: GoogleFonts.rethinkSans(
                                     fontWeight: FontWeight.bold,
                                     fontSize: Responsive.textScaleFactor * 12,
                                   ),
                                 ),
+                                // Text(
+                                //   "Timestamp: ${record.formattedTime}",
+                                //   style: GoogleFonts.rethinkSans(
+                                //     fontWeight: FontWeight.normal,
+                                //     fontSize: Responsive.textScaleFactor * 10,
+                                //   ),
+                                // ),
                                 Text(
                                   record.status,
                                   style: GoogleFonts.rethinkSans(
@@ -413,7 +420,8 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                                   ),
                                 ),
                                 Text(
-                                  record.formattedTimeIn,
+                                  record.formattedTimeIn ??
+                                      record.formattedTime,
                                   style: GoogleFonts.rethinkSans(
                                     fontWeight: FontWeight.normal,
                                     fontSize: Responsive.textScaleFactor * 10,

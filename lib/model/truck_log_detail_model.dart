@@ -74,6 +74,12 @@ class TruckLogDetailModel {
     return '${_getMonthName(timeIn!.month)} ${timeIn!.day}, ${timeIn!.year}';
   }
 
+  // Get formatted timestamp string
+  String get formattedTimestamp {
+    if (timestamp == null) return '--';
+    return '${_getMonthName(timestamp!.month)} ${timestamp!.day}';
+  }
+
   // Get formatted time strings
   String get formattedTimeIn {
     if (timeIn == null) return '--';
@@ -83,6 +89,19 @@ class TruckLogDetailModel {
   String get formattedTimeOut {
     if (timeOut == null) return '--';
     return '${timeOut!.hour.toString().padLeft(2, '0')}:${timeOut!.minute.toString().padLeft(2, '0')} ${timeOut!.hour >= 12 ? 'PM' : 'AM'}';
+  }
+
+  // Get formatted time strings
+
+  // Get formatted time strings
+  String get formattedTime {
+    if (timestamp == null) return '--';
+    return '${timestamp!.year} at ${timestamp!.hour.toString().padLeft(2, '0')}:${timestamp!.minute.toString().padLeft(2, '0')} ${timestamp!.hour >= 12 ? 'PM' : 'AM'}';
+  }
+
+  String get formattedDatef {
+    if (timestamp == null) return '--';
+    return '${_getMonthName(timestamp!.month)} ${timestamp!.day}, ${timestamp!.year}';
   }
 
   // Helper method to get month name
