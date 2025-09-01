@@ -9,7 +9,7 @@ class RoutesName {
   static const String truckLog = '/truck-log';
   static const String splash = '/splash-view';
   static const String addTruckEntry = '/addTruckEntry-view';
-  static const String eidtTruckEntry = '/eidtTruckEntry';
+  static const String eidtTruckEntry = '/eidtTruckEntry-view';
 
   static const String notifications = '/notifications-view';
   static const String changePassword = '/changePassword-view';
@@ -17,7 +17,8 @@ class RoutesName {
   static const String editProfile = '/editProfile-view';
   static const String timeFormat = '/timeFormat-view';
   static const String truckLogDetail = '/truckLogDetail-view';
-  static const String manageTrucks = '/manage-trucks';
-  static const String settings = '/settings';
-  static const String main = '/main';
+  static const String manageTrucks = '/manage-trucks-view';
+  static const String settings = '/settings-view';
+  static const String main = '/main-view';
+  static const String search = '/search-view';
 }

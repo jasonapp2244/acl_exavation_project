@@ -164,7 +164,7 @@ class ManageTrucks extends StatelessWidget {
                             Text(
                               "Sort By",
                               style: GoogleFonts.rethinkSans(
-                                color: AppColor.textdColor,
+                                color: AppColor.textColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: Responsive.textScaleFactor * 16,
                               ),
@@ -364,7 +364,7 @@ class ManageTrucks extends StatelessWidget {
                                                       style:
                                                           GoogleFonts.rethinkSans(
                                                             color: AppColor
-                                                                .textdColor,
+                                                                .textColor,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                           ),

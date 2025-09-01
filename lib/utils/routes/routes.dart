@@ -1,3 +1,5 @@
+import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
+import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
 import 'package:acl/utils/routes/routes_name.dart';
 import 'package:acl/view/add_truck_entery_view.dart';
 import 'package:acl/view/change_email_view.dart';
@@ -9,6 +11,7 @@ import 'package:acl/view/loginview.dart';
 import 'package:acl/view/main_wrapper.dart';
 import 'package:acl/view/manage_trucks.dart';
 import 'package:acl/view/notifications_view.dart';
+import 'package:acl/view/search_field_view.dart';
 import 'package:acl/view/setting_view.dart';
 import 'package:acl/view/sginupview.dart';
 import 'package:acl/view/splash_view.dart';
@@ -16,6 +19,7 @@ import 'package:acl/view/time_format_view.dart';
 import 'package:acl/view/truck_log_detail_view.dart';
 import 'package:acl/view/truck_log_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Routes {
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -34,7 +38,12 @@ class Routes {
       case RoutesName.main:
         return MaterialPageRoute(builder: (_) => MainScreen());
       case RoutesName.truckLogDetail:
-        return MaterialPageRoute(builder: (_) => TruckLogDetailView());
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider(
+            create: (context) => TruckLogDetailController(),
+            child: TruckLogDetailView(),
+          ),
+        );
       case RoutesName.manageTrucks:
         return MaterialPageRoute(builder: (_) => ManageTrucks());
       case RoutesName.addTruckEntry:
@@ -51,9 +60,16 @@ class Routes {
       case RoutesName.editProfile:
         return MaterialPageRoute(builder: (_) => EditProfileView());
       case RoutesName.eidtTruckEntry:
-        return MaterialPageRoute(builder: (_) => EditTruckEntryView());
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider(
+            create: (context) => EditTruckEntryController(),
+            child: EditTruckEntryView(),
+          ),
+        );
       case RoutesName.timeFormat:
         return MaterialPageRoute(builder: (_) => TimeFormatView());
+      case RoutesName.search:
+        return MaterialPageRoute(builder: (_) => SearchFieldView());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

@@ -1,6 +1,6 @@
-import 'package:acl/controller/logout_view_model.dart';
-import 'package:acl/controller/signup_view_model.dart';
-import 'package:acl/controller/user_profile_controller.dart';
+import 'package:acl/viewmodel/logout_view_model.dart';
+import 'package:acl/viewmodel/signup_view_model.dart';
+import 'package:acl/viewmodel/user_profile_model_view.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/responsive.dart';
 import 'package:acl/utils/routes/routes_name.dart';
@@ -183,7 +183,7 @@ class _SettingViewState extends State<SettingView> {
                                                     Responsive.textScaleFactor *
                                                     20,
                                                 fontWeight: FontWeight.bold,
-                                                color: AppColor.textdColor,
+                                                color: AppColor.textColor,
                                               ),
                                             ),
                                             SizedBox(height: 4),
@@ -290,74 +290,6 @@ class _SettingViewState extends State<SettingView> {
                                         ],
                                       ),
                                     ),
-                                    // Row(children: [Expanded(child: Divider())]),
-                                    // GestureDetector(
-                                    //   onTap: () => Navigator.pushNamed(
-                                    //     context,
-                                    //     RoutesName.notifications,
-                                    //   ),
-                                    //   child: Row(
-                                    //     mainAxisAlignment:
-                                    //         MainAxisAlignment.spaceBetween,
-                                    //     children: [
-                                    //       Row(
-                                    //         children: [
-                                    //           SvgPicture.asset(
-                                    //             "assets/icons/notification.svg",
-                                    //           ),
-                                    //           SizedBox(width: 12),
-                                    //           Text(
-                                    //             "Notifications",
-                                    //             style: GoogleFonts.rethinkSans(
-                                    //               fontSize:
-                                    //                   Responsive
-                                    //                       .textScaleFactor *
-                                    //                   16,
-                                    //               fontWeight: FontWeight.w500,
-                                    //             ),
-                                    //           ),
-                                    //         ],
-                                    //       ),
-                                    //       SvgPicture.asset(
-                                    //         "assets/icons/Polygon 1.svg",
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                    // Row(children: [Expanded(child: Divider())]),
-                                    // GestureDetector(
-                                    //   onTap: () => Navigator.pushNamed(
-                                    //     context,
-                                    //     RoutesName.timeFormat,
-                                    //   ),
-                                    //   child: Row(
-                                    //     mainAxisAlignment:
-                                    //         MainAxisAlignment.spaceBetween,
-                                    //     children: [
-                                    //       Row(
-                                    //         children: [
-                                    //           SvgPicture.asset(
-                                    //             "assets/icons/Frame 1000002074 (1).svg",
-                                    //           ),
-                                    //           SizedBox(width: 12),
-                                    //           Text(
-                                    //             "Time Format",
-                                    //             style: GoogleFonts.rethinkSans(
-                                    //               fontSize:
-                                    //                   Responsive
-                                    //                       .textScaleFactor *
-                                    //                   16,
-                                    //               fontWeight: FontWeight.w500,
-                                    //             ),
-                                    //           ),
-                                    //         ],
-                                    //       ),
-                                    //       SvgPicture.asset(
-                                    //         "assets/icons/Polygon 1.svg",
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                               ),

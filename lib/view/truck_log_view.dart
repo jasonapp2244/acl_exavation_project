@@ -167,7 +167,7 @@ class TruckLogView extends StatelessWidget {
                           Text(
                             "Showing logs from",
                             style: GoogleFonts.rethinkSans(
-                              color: AppColor.textdColor,
+                              color: AppColor.textColor,
                               fontWeight: FontWeight.bold,
                               fontSize: Responsive.textScaleFactor * 16,
                             ),
@@ -273,7 +273,7 @@ class TruckLogView extends StatelessWidget {
                                             width: 10,
                                             height: 10,
                                             decoration: BoxDecoration(
-                                              color: AppColor.textdColor,
+                                              color: AppColor.textColor,
                                               shape: BoxShape.circle,
                                             ),
                                           ),
@@ -284,7 +284,7 @@ class TruckLogView extends StatelessWidget {
                                               dashLength: 4,
                                               dashGapLength: 4,
                                               lineThickness: 1,
-                                              dashColor: AppColor.textdColor,
+                                              dashColor: AppColor.textColor,
                                             ),
                                           ),
                                           // SizedBox(width: 5),
@@ -293,7 +293,7 @@ class TruckLogView extends StatelessWidget {
                                             width: 10,
                                             height: 10,
                                             decoration: BoxDecoration(
-                                              color: AppColor.textdColor,
+                                              color: AppColor.textColor,
                                               shape: BoxShape.circle,
                                             ),
                                           ),
@@ -391,7 +391,7 @@ class TruckLogView extends StatelessWidget {
                                                   style:
                                                       GoogleFonts.rethinkSans(
                                                         color:
-                                                            AppColor.textdColor,
+                                                            AppColor.textColor,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),

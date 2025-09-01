@@ -1,15 +1,18 @@
-import 'package:acl/controller/truck_driver_model_view.dart';
-import 'package:acl/controller/user_profile_controller.dart';
+import 'package:acl/utils/routes/utils.dart';
+import 'package:acl/viewmodel/truck_driver_model_view.dart';
+import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
+import 'package:acl/viewmodel/user_profile_model_view.dart';
 import 'package:acl/model/truck_driver_record_model.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/auth_button.dart';
 import 'package:acl/res/components/responsive.dart';
+import 'package:acl/utils/routes/routes_name.dart';
 import 'package:acl/view/add_truck_entery_view.dart';
+import 'package:acl/view/truck_log_detail_view.dart';
 import 'package:acl/view/widgets/custom_driver_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Homeview extends StatefulWidget {
@@ -23,7 +26,7 @@ class _HomeviewState extends State<Homeview> {
   @override
   void initState() {
     super.initState();
-    // Fetch user profile data when view loads
+    // Fetch user profile after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<UserProfileController>(
         context,
@@ -32,380 +35,325 @@ class _HomeviewState extends State<Homeview> {
     });
   }
 
-  // Helper method to get current date in the required format
-  String _getCurrentDate() {
-    final now = DateTime.now();
-    final months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    final day = now.day.toString().padLeft(2, '0');
-    final month = months[now.month - 1];
-    final year = now.year.toString();
-    return '$day $month $year';
-  }
-
   @override
   Widget build(BuildContext context) {
-    var truckProvider = Provider.of<TruckEntryProvider>(context, listen: false);
+    final truckProvider = Provider.of<TruckEntryProvider>(
+      context,
+      listen: false,
+    );
     Responsive.init(context);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColor.secondaryColor,
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: Column(
-              children: [
-                Container(
-                  height: 370,
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: RadialGradient(
-                        center: Alignment.topRight,
-                        radius: 0.6,
-                        focalRadius: 0.1,
-                        colors: [Color(0xFF4EEED0), Color(0xFF111B19)],
-                      ), // Apply the gradient here
-                    ),
-                    child: Padding(
-                      padding: Responsive.padding(left: 4, right: 4, top: 2),
-                      child: Consumer<UserProfileController>(
-                        builder: (context, profileController, child) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: AssetImage(
-                                          "assets/images/Ellipse 2@2x.png",
-                                        ),
-                                      ),
-                                      SizedBox(width: Responsive.w(2)),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            profileController.name.isNotEmpty
-                                                ? profileController.name
-                                                : "Loading...",
-                                            style: GoogleFonts.inter(
-                                              color: AppColor.whiteColor,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(
-                                            _getCurrentDate(),
-                                            style: GoogleFonts.inter(
-                                              color: AppColor.whiteColor,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: Responsive.h(1)),
-                              Container(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    hintText: "Search Truck by Number",
-                                    hintStyle: GoogleFonts.rethinkSans(
-                                      color: AppColor.filletextdColor,
-                                    ),
-                                    filled: true,
-                                    fillColor: AppColor.whiteColor.withValues(
-                                      alpha: 0.2,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.whiteColor.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                      ),
-                                      borderRadius: BorderRadius.circular(22),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.whiteColor.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                      ),
-                                      borderRadius: BorderRadius.circular(22),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.whiteColor.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                      ),
-                                      borderRadius: BorderRadius.circular(22),
-                                    ),
-                                    disabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.whiteColor.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                      ),
-                                      borderRadius: BorderRadius.circular(22),
-                                    ),
-                                    // border: OutlineInputBorder(
-
-                                    //   borderRadius: BorderRadius.circular(26)
-                                    // )
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: Responsive.h(1)),
-
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(22),
-                                  color: AppColor.whiteColor.withValues(
-                                    alpha: 0.2,
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Total Trucks",
-                                        style: GoogleFonts.inter(
-                                          fontSize:
-                                              Responsive.textScaleFactor * 14,
-                                          color: AppColor.whiteColor,
-                                          fontWeight: FontWeight.normal,
-                                        ),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "28",
-                                            style: GoogleFonts.inter(
-                                              fontSize:
-                                                  Responsive.textScaleFactor *
-                                                  36,
-                                              color: AppColor.whiteColor,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SvgPicture.asset(
-                                            "assets/images/truck.svg",
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: Responsive.h(1)),
-
-                              //Active Trucks On-Site and Departed Trucks
-                              Row(
-                                children: [
-                                  Container(
-                                    height: Responsive.h(12),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(22),
-                                      color: AppColor.whiteColor.withValues(
-                                        alpha: 0.2,
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Active Trucks On-Site",
-                                            style: GoogleFonts.inter(
-                                              fontSize:
-                                                  Responsive.textScaleFactor *
-                                                  12,
-                                              color: AppColor.whiteColor,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            "6",
-                                            style: GoogleFonts.inter(
-                                              fontSize:
-                                                  Responsive.textScaleFactor *
-                                                  36,
-                                              color: AppColor.whiteColor,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: Responsive.w(1)),
-                                  Expanded(
-                                    child: Container(
-                                      height: Responsive.h(12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(22),
-                                        color: AppColor.whiteColor.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Departed Trucks",
-                                              style: GoogleFonts.inter(
-                                                fontSize:
-                                                    Responsive.textScaleFactor *
-                                                    12,
-                                                color: AppColor.whiteColor,
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            Text(
-                                              "13",
-                                              style: GoogleFonts.inter(
-                                                fontSize:
-                                                    Responsive.textScaleFactor *
-                                                    36,
-                                                color: AppColor.whiteColor,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: Responsive.h(1)),
-
-                              AuthButton(
-                                buttonText: 'Add New Truck Entry',
-                                loading: false,
-                                onPress: () {
-                                  print('Add New Truck Entry button pressed');
-                                  // Try direct navigation first
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddTruckEnteryView(),
-                                    ),
-                                  );
-                                },
-                                prefixIcon: SvgPicture.asset(
-                                  "assets/icons/plus.svg",
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          child: Column(
+            children: [_buildHeaderSection(context, truckProvider)],
           ),
         ),
+        bottomSheet: _buildBottomSheet(context, truckProvider),
+      ),
+    );
+  }
 
-        bottomSheet: Container(
-          height:
-              MediaQuery.of(context).size.height * 0.35, // 40% screen height
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(22),
-              topRight: Radius.circular(22),
+  // ---------------- HEADER SECTION ----------------
+  Widget _buildHeaderSection(
+    BuildContext context,
+    TruckEntryProvider truckProvider,
+  ) {
+    return Container(
+      height: 370,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment.topRight,
+          radius: 0.6,
+          focalRadius: 0.1,
+          colors: [Color(0xFF4EEED0), Color(0xFF111B19)],
+        ),
+      ),
+      child: Padding(
+        padding: Responsive.padding(left: 4, right: 4, top: 2),
+        child: Consumer<UserProfileController>(
+          builder: (context, profileController, child) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildProfileRow(profileController),
+                SizedBox(height: Responsive.h(1)),
+                _buildSearchField(context),
+                SizedBox(height: Responsive.h(1)),
+                _buildTotalTrucksCard(truckProvider),
+                SizedBox(height: Responsive.h(1)),
+                _buildOnSiteDepartedRow(truckProvider),
+                SizedBox(height: Responsive.h(1)),
+                _buildAddTruckButton(context),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // ---------------- PROFILE ROW ----------------
+  Widget _buildProfileRow(UserProfileController profileController) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: AssetImage("assets/images/Ellipse 2@2x.png"),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12.0,
-              vertical: 16.0,
-            ),
-            child: Column(
+            SizedBox(width: Responsive.w(2)),
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Active Trucks On-Site",
-                  style: GoogleFonts.rethinkSans(
+                  profileController.name.isNotEmpty
+                      ? profileController.name
+                      : "Loading...",
+                  style: GoogleFonts.inter(
+                    color: AppColor.whiteColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: Responsive.textScaleFactor * 14,
                   ),
                 ),
-
-                StreamBuilder<List<TruckDriverRecordModel>>(
-                  stream: truckProvider.truckEntriesStream(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Center(child: Text("Error: ${snapshot.error}"));
-                    }
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(
-                        child: Text("No truck entries found."),
-                      );
-                    }
-                    final entries = snapshot.data!;
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: entries.length,
-                        itemBuilder: (context, index) {
-                          final truck = entries[index];
-                          return CustomTruckEntryCardWidget(
-                            truckNumber: truck.truckNumber,
-                            status: truck.status,
-                            timeIn: truck.timeIn!,
-                            driverName: truck.driverName,
-                            driverRole: truck.driverRole,
-                            onTimeOutPressed: () {},
-                            onViewLogsPressed: () {},
-                          );
-                        },
-                      ),
-                    );
-                  },
+                Text(
+                  Utils().getCurrentDate(),
+                  style: GoogleFonts.inter(
+                    color: AppColor.whiteColor,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
               ],
             ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // ---------------- SEARCH FIELD ----------------
+  Widget _buildSearchField(BuildContext context) {
+    return TextFormField(
+      onTap: () => Navigator.pushNamed(context, RoutesName.search),
+      decoration: InputDecoration(
+        hintText: "Search Truck by Number",
+        hintStyle: GoogleFonts.rethinkSans(color: AppColor.filletextdColor),
+        filled: true,
+        fillColor: AppColor.whiteColor.withValues(alpha: 0.2),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColor.whiteColor.withValues(alpha: 0.2),
           ),
+          borderRadius: BorderRadius.circular(22),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColor.whiteColor.withValues(alpha: 0.2),
+          ),
+          borderRadius: BorderRadius.circular(22),
         ),
       ),
+    );
+  }
+
+  // ---------------- TOTAL TRUCKS CARD ----------------
+  Widget _buildTotalTrucksCard(TruckEntryProvider truckProvider) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(22),
+        color: AppColor.whiteColor.withValues(alpha: 0.2),
+      ),
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Total Trucks",
+            style: GoogleFonts.inter(
+              fontSize: Responsive.textScaleFactor * 14,
+              color: AppColor.whiteColor,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              StreamBuilder<int>(
+                stream: truckProvider.allActiveTrucksCount(),
+                builder: (context, snapshot) {
+                  return Text(
+                    "${snapshot.data ?? 0}",
+                    style: GoogleFonts.inter(
+                      fontSize: Responsive.textScaleFactor * 36,
+                      color: AppColor.whiteColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+              ),
+              SvgPicture.asset("assets/images/truck.svg"),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ---------------- ON-SITE AND DEPARTED TRUCKS ----------------
+  Widget _buildOnSiteDepartedRow(TruckEntryProvider truckProvider) {
+    return Row(
+      children: [
+        _buildStatusCard(
+          title: "Active Trucks On-Site",
+          stream: truckProvider.activeOnSiteTrucksCount(),
+        ),
+        SizedBox(width: Responsive.w(1)),
+        Expanded(
+          child: _buildStatusCard(
+            title: "Departed Trucks",
+            stream: truckProvider.activeDepartedTrucksCount(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatusCard({
+    required String title,
+    required Stream<int> stream,
+  }) {
+    return Container(
+      height: Responsive.h(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(22),
+        color: AppColor.whiteColor.withValues(alpha: 0.2),
+      ),
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.inter(
+              fontSize: Responsive.textScaleFactor * 12,
+              color: AppColor.whiteColor,
+            ),
+          ),
+          StreamBuilder<int>(
+            stream: stream,
+            builder: (context, snapshot) {
+              return Text(
+                "${snapshot.data ?? 0}",
+                style: GoogleFonts.inter(
+                  fontSize: Responsive.textScaleFactor * 36,
+                  color: AppColor.whiteColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ---------------- ADD TRUCK BUTTON ----------------
+  Widget _buildAddTruckButton(BuildContext context) {
+    return AuthButton(
+      buttonText: 'Add New Truck Entry',
+      loading: false,
+      onPress: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AddTruckEnteryView()),
+        );
+      },
+      prefixIcon: SvgPicture.asset("assets/icons/plus.svg"),
+    );
+  }
+
+  // ---------------- BOTTOM SHEET ----------------
+  Widget _buildBottomSheet(
+    BuildContext context,
+    TruckEntryProvider truckProvider,
+  ) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.35,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(22),
+          topRight: Radius.circular(22),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Active Trucks On-Site",
+              style: GoogleFonts.rethinkSans(
+                fontWeight: FontWeight.bold,
+                fontSize: Responsive.textScaleFactor * 14,
+              ),
+            ),
+            _buildActiveTrucksList(truckProvider),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActiveTrucksList(TruckEntryProvider truckProvider) {
+    return StreamBuilder<List<TruckDriverRecordModel>>(
+      stream: truckProvider.truckEntriesStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text("Error: ${snapshot.error}"));
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text("No truck entries found."));
+        }
+
+        final entries = snapshot.data!;
+        return Expanded(
+          child: ListView.builder(
+            itemCount: entries.length,
+            itemBuilder: (context, index) {
+              final truck = entries[index];
+              return CustomTruckEntryCardWidget(
+                truckNumber: truck.truckNumber,
+                status: truck.status,
+                timeIn: truck.timeIn ?? DateTime.now(),
+                driverName: truck.driverName,
+                driverRole: truck.driverRole,
+                onTimeOutPressed: () {},
+                onViewLogsPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider(
+                        create: (context) => TruckLogDetailController(),
+                        child: TruckLogDetailView(
+                          truckNumber: truck.truckNumber,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                isActive: truck.isActive,
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

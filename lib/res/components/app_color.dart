@@ -11,7 +11,7 @@ class AppColor {
   static const Color facebokkColor = Color(0xFF1299F6);
   static const Color filledColor = Color(0xFFF6F6F6);
   static const Color filletextdColor = Color(0xFF747474);
-static const Color textdColor = Color(0xFF111B19);
+  static const Color textColor = Color(0xFF111B19);
   static const Color whiteColor = Color(0xFFFFFFFF);
   static const Color redColor = Color(0xFFF63F2F);
 }

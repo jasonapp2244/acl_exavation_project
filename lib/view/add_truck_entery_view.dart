@@ -1,14 +1,11 @@
-import 'package:acl/controller/truck_driver_model_view.dart';
+import 'package:acl/viewmodel/truck_driver_model_view.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/auth_button.dart';
 import 'package:acl/res/components/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AddTruckEnteryView extends StatelessWidget {
   const AddTruckEnteryView({super.key});

@@ -1,3 +1,5 @@
+import 'package:acl/utils/routes/routes.dart';
+import 'package:acl/utils/routes/routes_name.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +12,10 @@ class ChangePasswordModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   String? get successMessage => _successMessage;
 
+  TextEditingController oldPasswordController = new TextEditingController();
+  TextEditingController newPasswordController = new TextEditingController();
+  TextEditingController confirmPasswordController = new TextEditingController();
+
   // Password validation
   bool _isValidPassword(String password) {
     return password.length >= 6;
@@ -19,8 +25,11 @@ class ChangePasswordModel extends ChangeNotifier {
     String oldPassword,
     String newPassword,
     String confirmPassword,
+    BuildContext context,
   ) async {
-    if (oldPassword.trim().isEmpty || newPassword.trim().isEmpty || confirmPassword.trim().isEmpty) {
+    if (oldPassword.trim().isEmpty ||
+        newPassword.trim().isEmpty ||
+        confirmPassword.trim().isEmpty) {
       _errorMessage = "All fields are required";
       _successMessage = null;
       notifyListeners();
@@ -79,7 +88,8 @@ class ChangePasswordModel extends ChangeNotifier {
       await user.updatePassword(newPassword);
       _successMessage = "Password changed successfully!";
       _errorMessage = null;
-      
+      clearMessages();
+      Navigator.pushNamed(context, RoutesName.settings);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'wrong-password':
@@ -102,6 +112,34 @@ class ChangePasswordModel extends ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  // Validation methods
+  String? validateOldPassword(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Current password is required';
+    }
+    return null;
+  }
+
+  String? validateNewPassword(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'New password is required';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
+  }
+
+  String? validateConfirmPassword(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please confirm your password';
+    }
+    if (value != newPasswordController.text) {
+      return 'Passwords do not match';
+    }
+    return null;
   }
 
   void clearMessages() {

@@ -1,4 +1,4 @@
-import 'package:acl/controller/change_email_model_view.dart';
+import 'package:acl/viewmodel/change_email_model_view.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/auth_button.dart';
 import 'package:flutter/material.dart';

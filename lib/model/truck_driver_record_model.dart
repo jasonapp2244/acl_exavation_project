@@ -9,6 +9,9 @@ class TruckDriverRecordModel {
   final String driverRole;
   final String additionalNotes;
   final String licensePlatePhotoPath;
+  final int? isActive;
+  final DateTime? timeOut;
+  final DateTime? timestamp;
 
   TruckDriverRecordModel({
     required this.id,
@@ -19,6 +22,9 @@ class TruckDriverRecordModel {
     required this.driverRole,
     this.additionalNotes = '',
     this.licensePlatePhotoPath = '',
+    this.isActive,
+    this.timeOut,
+    this.timestamp,
   });
 
   // Convert Firestore doc to model
@@ -35,6 +41,13 @@ class TruckDriverRecordModel {
       driverRole: data['driverRole'] ?? 'Driver',
       additionalNotes: data['additionalNotes'] ?? '',
       licensePlatePhotoPath: data['licensePlatePhoto'] ?? '',
+      isActive: data['isActive'] ?? 1,
+      timeOut: data['timeOut'] != null
+          ? (data['timeOut'] as Timestamp).toDate()
+          : null,
+      timestamp: data['timestamp'] != null
+          ? (data['timestamp'] as Timestamp).toDate()
+          : null,
     );
   }
 
@@ -48,6 +61,9 @@ class TruckDriverRecordModel {
       'driverRole': driverRole,
       'additionalNotes': additionalNotes,
       'licensePlatePhoto': licensePlatePhotoPath,
+      'isActive': isActive,
+      'timeOut': timeOut,
+      'timestamp': timestamp != null ? Timestamp.fromDate(timestamp!) : null,
     };
   }
 }

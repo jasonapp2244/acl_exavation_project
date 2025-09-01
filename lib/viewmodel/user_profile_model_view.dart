@@ -1,3 +1,4 @@
+import 'package:acl/utils/routes/routes_name.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -72,6 +73,7 @@ class UserProfileController extends ChangeNotifier {
     required String email,
     required String phone,
     required String address,
+    required BuildContext context,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -106,6 +108,7 @@ class UserProfileController extends ChangeNotifier {
       _address = address.trim();
 
       _successMessage = 'Profile updated successfully!';
+      Navigator.pushNamed(context, RoutesName.settings);
     } catch (e) {
       _errorMessage = 'Failed to update profile: $e';
     } finally {

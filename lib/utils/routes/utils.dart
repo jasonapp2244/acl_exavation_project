@@ -24,6 +24,28 @@ class Utils {
     FocusScope.of(context).requestFocus(nextFoucs);
   }
 
+  String getCurrentDate() {
+    final now = DateTime.now();
+    final months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    final day = now.day.toString().padLeft(2, '0');
+    final month = months[now.month - 1];
+    final year = now.year.toString();
+    return '$day $month $year';
+  }
+
   static void flushBarErrorMassage(String message, BuildContext context) {
     showFlushbar(
       context: context,
@@ -32,7 +54,7 @@ class Utils {
         reverseAnimationCurve: Curves.easeInOut,
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         padding: const EdgeInsets.all(15),
-        //backgroudColors
+
         message: message,
         borderRadius: BorderRadius.circular(20),
         backgroundColor: Colors.red,
@@ -64,6 +86,8 @@ String formatTime(var timeIn) {
     return "--:--"; // fallback if parsing fails
   }
 }
+
+// Helper method to get current date in the required format
 
 snakBar(String massage, BuildContext context) {
   return ScaffoldMessenger.of(

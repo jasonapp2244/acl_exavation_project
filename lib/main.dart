@@ -37,14 +37,16 @@
 //   }
 // }
 
-import 'package:acl/controller/change_email_model_view.dart';
-import 'package:acl/controller/forgot_password_view.dart';
-import 'package:acl/controller/login_view_model.dart';
-import 'package:acl/controller/logout_view_model.dart';
-import 'package:acl/controller/settings_reset_password_model.dart';
-import 'package:acl/controller/signup_view_model.dart';
-import 'package:acl/controller/truck_driver_model_view.dart';
-import 'package:acl/controller/user_profile_controller.dart';
+import 'package:acl/viewmodel/change_email_model_view.dart';
+import 'package:acl/viewmodel/forgot_password_view_model.dart';
+import 'package:acl/viewmodel/login_view_model.dart';
+import 'package:acl/viewmodel/logout_view_model.dart';
+import 'package:acl/viewmodel/searchfield_providerl_view_model.dart';
+import 'package:acl/viewmodel/settings_reset_password_view_model.dart';
+import 'package:acl/viewmodel/signup_view_model.dart';
+import 'package:acl/viewmodel/truck_driver_model_view.dart';
+import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
+import 'package:acl/viewmodel/user_profile_model_view.dart';
 import 'package:acl/utils/routes/routes.dart';
 import 'package:acl/utils/routes/routes_name.dart';
 import 'package:acl/firebase_options.dart';
@@ -72,6 +74,9 @@ void main() async {
           create: (_) => TruckEntryProvider(),
           child: AddTruckEnteryView(),
         ),
+        ChangeNotifierProvider(create: (_) => SearchTruckProvider()),
+        ChangeNotifierProvider(create: (_) => TruckLogDetailController()),
+        ChangeNotifierProvider(create: (_) => TruckEntryProvider()),
       ],
       child: const MyApp(),
     ),
