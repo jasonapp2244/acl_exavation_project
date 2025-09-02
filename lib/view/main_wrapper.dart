@@ -17,7 +17,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     const Homeview(),
     const TruckLogView(),
-    const ManageTrucks(),
+    // const ManageTrucks(),
     const SettingView(),
   ];
 

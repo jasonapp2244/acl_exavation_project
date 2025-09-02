@@ -44,18 +44,18 @@ class ManageTrucks extends StatelessWidget {
                               fontSize: Responsive.textScaleFactor * 26,
                             ),
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColor.whiteColor.withValues(alpha: 0.2),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: SvgPicture.asset(
-                                "assets/icons/notificsation.svg",
-                              ),
-                            ),
-                          ),
+                          // Container(
+                          //   decoration: BoxDecoration(
+                          //     shape: BoxShape.circle,
+                          //     color: AppColor.whiteColor.withValues(alpha: 0.2),
+                          //   ),
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.all(12.0),
+                          //     child: SvgPicture.asset(
+                          //       "assets/icons/notificsation.svg",
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                       SizedBox(height: Responsive.h(1)),

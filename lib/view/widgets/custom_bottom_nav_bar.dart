@@ -51,13 +51,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             ),
           ),
 
-          NavigationBarButton(
-            text: 'Trucks',
-            imagePath: 'assets/icons/truck_icon.svg',
-            backgroundGradient: LinearGradient(
-              colors: [Color(0xff4EEED0), Color(0xff4EEED0)],
-            ),
-          ),
+          // NavigationBarButton(
+          //   text: 'Trucks',
+          //   imagePath: 'assets/icons/truck_icon.svg',
+          //   backgroundGradient: LinearGradient(
+          //     colors: [Color(0xff4EEED0), Color(0xff4EEED0)],
+          //   ),
+          // ),
           NavigationBarButton(
             text: 'Settings',
             imagePath: 'assets/icons/settings.svg',
