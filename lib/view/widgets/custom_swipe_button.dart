@@ -1,142 +1,66 @@
+import 'package:acl/model/truck_driver_record_model.dart';
 import 'package:acl/viewmodel/truck_driver_model_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
-class CustomSwipeButton extends StatefulWidget {
-  final VoidCallback? onSwipeComplete;
-  final String? id;
+class CustomSwipeButton extends StatelessWidget {
   final String buttonText;
-  final Color backgroundColor;
-  final Color fillColor;
-  final Color thumbColor;
-  String? isTimeIn;
+  final VoidCallback onSubmit;
+  final Color innerColor;
+  final Color outerColor;
+  final Color sliderIconColor;
+  String? id;
 
   CustomSwipeButton({
-    super.key,
-    this.onSwipeComplete,
-    this.buttonText = "Swipe to Time Out",
-    this.backgroundColor = const Color(0xFF4EEED0),
-    this.fillColor = Colors.white,
-    this.thumbColor = const Color(0x3D4EEED0),
-    this.isTimeIn,
+    Key? key,
     this.id,
-  });
-
-  @override
-  State<CustomSwipeButton> createState() => _CustomSwipeButtonState();
-}
-
-class _CustomSwipeButtonState extends State<CustomSwipeButton> {
-  double _dragValue = 0.0; // 0.0 → 1.0
-  bool _completed = false;
+    required this.buttonText,
+    required this.onSubmit,
+    this.innerColor = Colors.black,
+    this.outerColor = Colors.white,
+    this.sliderIconColor = Colors.white,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final double buttonWidth =
-        MediaQuery.of(context).size.width - 32; // padding
-    final double thumbWidth = 50;
+    final GlobalKey<SlideActionState> _key = GlobalKey();
     final truckProvider = Provider.of<TruckEntryViewModel>(
       context,
       listen: false,
     );
-    return Center(
-      child: Container(
-        width: double.infinity,
-        height: 50,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(35),
-          color: widget.backgroundColor.withOpacity(0.24),
+
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: SlideAction(
+        key: _key,
+        height: 50, // ✅ make it slimmer (default ~70, now half)
+        text: buttonText,
+        textStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
         ),
-        child: Stack(
-          children: [
-            // Animated white background fill
-            Align(
-              alignment: Alignment.centerRight, // fill from right → left
-              child: FractionallySizedBox(
-                widthFactor: _dragValue,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: widget.fillColor,
-                    borderRadius: BorderRadius.circular(35),
-                  ),
-                ),
-              ),
-            ),
-
-            // Swipe thumb
-            Positioned(
-              top: 5,
-              bottom: 5,
-              right: _dragValue * (buttonWidth - thumbWidth),
-              child: GestureDetector(
-                onHorizontalDragUpdate: (details) {
-                  if (!_completed) {
-                    setState(() {
-                      _dragValue = (_dragValue - details.delta.dx / buttonWidth)
-                          .clamp(0.0, 1.0); // reverse for right → left
-
-                      if (_dragValue >= 0.95) {
-                        _completed = true;
-                        widget.onSwipeComplete?.call();
-
-                        if (widget.buttonText == 'Swipe to Time In') {
-                          truckProvider.recordTimeIn(widget.id ?? '');
-                        } else {
-                          truckProvider.recordTimeOut(widget.id ?? '');
-                        }
-
-                        Future.delayed(const Duration(milliseconds: 500), () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Timed out successfully!'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        });
-                      }
-                    });
-                  }
-                },
-                onHorizontalDragEnd: (_) {
-                  if (!_completed && _dragValue < 0.95) {
-                    setState(() {
-                      _dragValue = 0.0; // reset if not completed
-                    });
-                  }
-                },
-                child: Container(
-                  width: thumbWidth,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: widget.thumbColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back, // right → left
-                    color: Colors.black,
-                    size: 30,
-                  ),
-                ),
-              ),
-            ),
-
-            // Center text
-            Positioned.fill(
-              child: Center(
-                child: Text(
-                  widget.buttonText,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ],
+        innerColor: innerColor,
+        outerColor: outerColor,
+        sliderButtonIcon: Icon(
+          Icons.arrow_forward,
+          size: 20, // ✅ smaller icon to match reduced height
+          color: Colors.black,
         ),
+        onSubmit: () {
+          if (buttonText == 'Swipe to Time In') {
+            truckProvider.recordTimeIn(id ?? '');
+          } else {
+            truckProvider.recordTimeOut(id ?? '');
+          }
+
+          onSubmit();
+          Future.delayed(
+            const Duration(seconds: 1),
+            () => _key.currentState?.reset(),
+          );
+        },
       ),
     );
   }

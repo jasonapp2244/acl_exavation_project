@@ -13,6 +13,7 @@ class CustomTruckEntryCardWidget extends StatelessWidget {
   final String truckNumber;
   final String status;
   final DateTime? timeIn;
+  final DateTime? timeOut;
   final String driverName;
   final String driverRole;
   final VoidCallback onTimeOutPressed;
@@ -30,7 +31,8 @@ class CustomTruckEntryCardWidget extends StatelessWidget {
     required this.onTimeOutPressed,
     required this.onViewLogsPressed,
     this.isActive,
-    this.id
+    this.id,
+    this.timeOut,
   });
 
   @override
@@ -85,57 +87,119 @@ class CustomTruckEntryCardWidget extends StatelessWidget {
           SizedBox(height: Responsive.h(1)),
 
           // Time-In
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Time-In",
-                    style: GoogleFonts.rethinkSans(
-                      fontWeight: FontWeight.bold,
-                      fontSize: Responsive.textScaleFactor * 12,
+          status == 'On Site'
+              ? Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Time-In",
+                          style: GoogleFonts.rethinkSans(
+                            fontWeight: FontWeight.bold,
+                            fontSize: Responsive.textScaleFactor * 12,
+                          ),
+                        ),
+                        Text(
+                          formatTime(timeIn),
+                          style: GoogleFonts.rethinkSans(
+                            fontWeight: FontWeight.normal,
+                            fontSize: Responsive.textScaleFactor * 10,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Text(
-                    formatTime(timeIn),
-                    style: GoogleFonts.rethinkSans(
-                      fontWeight: FontWeight.normal,
-                      fontSize: Responsive.textScaleFactor * 10,
+                    SizedBox(width: Responsive.h(2)),
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: AppColor.textColor,
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(width: Responsive.h(2)),
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: AppColor.textColor,
-                  shape: BoxShape.circle,
-                ),
-              ),
 
-              SizedBox(
-                width: 100, // or any value
-                child: DottedLine(
-                  dashLength: 4,
-                  //       dashGapLength: 4,
-                  lineThickness: 1,
-                  dashColor: AppColor.textColor,
-                ),
-              ),
+                    SizedBox(
+                      width: 100, // or any value
+                      child: DottedLine(
+                        dashLength: 4,
+                        //       dashGapLength: 4,
+                        lineThickness: 1,
+                        dashColor: AppColor.textColor,
+                      ),
+                    ),
 
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: AppColor.textColor,
-                  shape: BoxShape.circle,
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: AppColor.textColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Time-In",
+                          style: GoogleFonts.rethinkSans(
+                            fontWeight: FontWeight.bold,
+                            fontSize: Responsive.textScaleFactor * 12,
+                          ),
+                        ),
+                        Text(
+                          formatTime(timeIn),
+                          style: GoogleFonts.rethinkSans(
+                            fontWeight: FontWeight.normal,
+                            fontSize: Responsive.textScaleFactor * 10,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 5),
+                    CircleAvatar(
+                      radius: 5,
+                      backgroundColor: AppColor.textColor,
+                    ),
+                    Expanded(
+                      child: DottedLine(
+                        dashLength: 4,
+                        dashGapLength: 4,
+                        lineThickness: 1,
+                        dashColor: AppColor.textColor,
+                      ),
+                    ),
+                    CircleAvatar(
+                      radius: 5,
+                      backgroundColor: AppColor.textColor,
+                    ),
+                    SizedBox(width: 5),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Time-Out",
+                          style: GoogleFonts.rethinkSans(
+                            fontWeight: FontWeight.bold,
+                            fontSize: Responsive.textScaleFactor * 12,
+                          ),
+                        ),
+                        Text(
+                          formatTime(timeOut),
+                          style: GoogleFonts.rethinkSans(
+                            fontWeight: FontWeight.normal,
+                            fontSize: Responsive.textScaleFactor * 10,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
 
           SizedBox(height: Responsive.h(1)),
 
@@ -200,8 +264,17 @@ class CustomTruckEntryCardWidget extends StatelessWidget {
           SizedBox(height: Responsive.h(1)),
           CustomSwipeButton(
             id: id,
-            
-            buttonText: timeIn == null
+
+            innerColor: Color(0xff4EEED0),
+            outerColor: Color(0xff4EEED0).withOpacity(0.5), // 50% transparent
+
+            onSubmit: () {},
+
+            buttonText: status == 'On Site'
+                ? timeIn == null
+                      ? 'Swipe to Time In'
+                      : 'Swipe to Time Out'
+                : status == 'Departed'
                 ? 'Swipe to Time In'
                 : 'Swipe to Time Out',
           ),

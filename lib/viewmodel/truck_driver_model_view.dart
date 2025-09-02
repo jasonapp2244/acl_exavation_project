@@ -98,7 +98,96 @@ class TruckEntryViewModel extends ChangeNotifier {
     }
   }
 
+  // Stream<List<TruckDriverRecordModel>> truckEntriesStream(String selectStatus) {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   if (user == null) throw Exception("User not logged in");
+
+  //   return FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(user.uid)
+  //       .collection('truck_entries')
+  //       .where('status', isEqualTo: selectStatus) // corrected
+  //       .where('isActive', isEqualTo: 1)
+  //       .orderBy('timestamp', descending: true)
+  //       .snapshots()
+  //       .map((snapshot) {
+  //         // Group records by truck number and get only the most recent record for each
+  //         Map<String, TruckDriverRecordModel> uniqueTrucks = {};
+
+  //         for (var doc in snapshot.docs) {
+  //           final record = TruckDriverRecordModel.fromFirestore(doc);
+
+  //           // If this truck number hasn't been seen yet, add it
+  //           if (!uniqueTrucks.containsKey(record.truckNumber)) {
+  //             uniqueTrucks[record.truckNumber] = record;
+  //           } else {
+  //             // If we already have a record for this truck, compare timestamps
+  //             final existingRecord = uniqueTrucks[record.truckNumber]!;
+
+  //             // If current record has a more recent timestamp, replace it-
+  //             if (record.timestamp != null &&
+  //                 existingRecord.timestamp != null) {
+  //               if (record.timestamp!.isAfter(existingRecord.timestamp!)) {
+  //                 uniqueTrucks[record.truckNumber] = record;
+  //               }
+  //             } else if (record.timestamp != null &&
+  //                 existingRecord.timestamp == null) {
+  //               // If existing record has no timestamp but current does, use current
+  //               uniqueTrucks[record.truckNumber] = record;
+  //             }
+  //           }
+  //         }
+
+  //         // Return only the unique truck records (most recent for each truck number)
+  //         return uniqueTrucks.values.toList();
+  //       });
+  // }
+
   Stream<List<TruckDriverRecordModel>> truckEntriesStream(String selectStatus) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception("User not logged in");
+
+    // 🔹 Start query with active records only
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('truck_entries')
+        .where('isActive', isEqualTo: 1);
+
+    // 🔹 Apply status filter only if not "All View"
+    if (selectStatus != "All View") {
+      query = query.where('status', isEqualTo: selectStatus);
+    }
+
+    return query.orderBy('timestamp', descending: true).snapshots().map((
+      snapshot,
+    ) {
+      // Group by truck number, keep only the latest record
+      Map<String, TruckDriverRecordModel> uniqueTrucks = {};
+
+      for (var doc in snapshot.docs) {
+        final record = TruckDriverRecordModel.fromFirestore(doc);
+
+        if (!uniqueTrucks.containsKey(record.truckNumber)) {
+          uniqueTrucks[record.truckNumber] = record;
+        } else {
+          final existingRecord = uniqueTrucks[record.truckNumber]!;
+          if (record.timestamp != null && existingRecord.timestamp != null) {
+            if (record.timestamp!.isAfter(existingRecord.timestamp!)) {
+              uniqueTrucks[record.truckNumber] = record;
+            }
+          } else if (record.timestamp != null &&
+              existingRecord.timestamp == null) {
+            uniqueTrucks[record.truckNumber] = record;
+          }
+        }
+      }
+
+      return uniqueTrucks.values.toList();
+    });
+  }
+
+  Stream<List<TruckDriverRecordModel>> truckAllEntriesStream() {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception("User not logged in");
 
@@ -106,25 +195,21 @@ class TruckEntryViewModel extends ChangeNotifier {
         .collection('users')
         .doc(user.uid)
         .collection('truck_entries')
-        .where('status', isEqualTo: selectStatus) // corrected
+        .where('status', whereIn: ['on_site', 'departed']) // ✅ fetch both
         .where('isActive', isEqualTo: 1)
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
-          // Group records by truck number and get only the most recent record for each
           Map<String, TruckDriverRecordModel> uniqueTrucks = {};
 
           for (var doc in snapshot.docs) {
             final record = TruckDriverRecordModel.fromFirestore(doc);
 
-            // If this truck number hasn't been seen yet, add it
             if (!uniqueTrucks.containsKey(record.truckNumber)) {
               uniqueTrucks[record.truckNumber] = record;
             } else {
-              // If we already have a record for this truck, compare timestamps
               final existingRecord = uniqueTrucks[record.truckNumber]!;
 
-              // If current record has a more recent timestamp, replace it-
               if (record.timestamp != null &&
                   existingRecord.timestamp != null) {
                 if (record.timestamp!.isAfter(existingRecord.timestamp!)) {
@@ -132,13 +217,11 @@ class TruckEntryViewModel extends ChangeNotifier {
                 }
               } else if (record.timestamp != null &&
                   existingRecord.timestamp == null) {
-                // If existing record has no timestamp but current does, use current
                 uniqueTrucks[record.truckNumber] = record;
               }
             }
           }
 
-          // Return only the unique truck records (most recent for each truck number)
           return uniqueTrucks.values.toList();
         });
   }
@@ -240,7 +323,7 @@ class TruckEntryViewModel extends ChangeNotifier {
           .update({
             'timeOut': DateTime.now(),
             'status': 'Departed',
-            'isActive': 0,
+            'isActive': 1,
           });
     } catch (e) {
       debugPrint("Error recording Time Out: $e");

@@ -1,6 +1,7 @@
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/responsive.dart';
 import 'package:acl/utils/routes/routes_name.dart';
+import 'package:acl/view/widgets/custom_title.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -188,14 +189,64 @@ class TruckLogView extends StatelessWidget {
                                   color: AppColor.filledColor,
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                    vertical: 20,
+                                  ),
                                   child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
+                                      CustomStatusTile(
+                                        title: 'On Site',
+                                        isOnline: true,
+                                      ),
+                                      SizedBox(width: Responsive.h(2)),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
+                                          CircleAvatar(
+                                            backgroundImage: AssetImage(
+                                              "assets/images/Ellipse 2@2x.png",
+                                            ),
+                                          ),
                                           Row(
+                                            children: [
+                                              SizedBox(width: Responsive.w(1)),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Ruben Mango",
+                                                    style: GoogleFonts.rethinkSans(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize:
+                                                          Responsive
+                                                              .textScaleFactor *
+                                                          12,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Driver",
+                                                    style: GoogleFonts.rethinkSans(
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontSize:
+                                                          Responsive
+                                                              .textScaleFactor *
+                                                          10,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(width: Responsive.w(1)),
+                                          Row(
+                                            spacing: 8,
                                             children: [
                                               SvgPicture.asset(
                                                 "assets/icons/truck.svg",
@@ -217,6 +268,40 @@ class TruckLogView extends StatelessWidget {
                                                   ),
                                                   Text(
                                                     "LHE-2233",
+                                                    style: GoogleFonts.rethinkSans(
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontSize:
+                                                          Responsive
+                                                              .textScaleFactor *
+                                                          10,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Container(
+                                                height:
+                                                    20, // or match other elements in the row
+                                                width: 1,
+                                                color: AppColor.filletextdColor,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Total Logs",
+                                                    style: GoogleFonts.rethinkSans(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize:
+                                                          Responsive
+                                                              .textScaleFactor *
+                                                          12,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "12 trips recorded",
                                                     style: GoogleFonts.rethinkSans(
                                                       fontWeight:
                                                           FontWeight.normal,
@@ -332,62 +417,58 @@ class TruckLogView extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Row(
-                                            children: [
-                                              CircleAvatar(
-                                                backgroundImage: AssetImage(
-                                                  "assets/images/Ellipse 2@2x.png",
+                                          Expanded(
+                                            child: GestureDetector(
+                                              onTap: () =>
+                                                  Navigator.pushReplacementNamed(
+                                                    context,
+                                                    RoutesName.eidtTruckEntry,
+                                                  ),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: AppColor.primaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(22),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      vertical: 5.0,
+                                                      horizontal: 10.0,
+                                                    ),
+                                                child: Text(
+                                                  "Edit",
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.rethinkSans(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize:
+                                                        Responsive
+                                                            .textScaleFactor *
+                                                        14,
+                                                  ),
                                                 ),
                                               ),
-                                              SizedBox(width: Responsive.w(1)),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Ruben Mango",
-                                                    style: GoogleFonts.rethinkSans(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize:
-                                                          Responsive
-                                                              .textScaleFactor *
-                                                          12,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Driver",
-                                                    style: GoogleFonts.rethinkSans(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize:
-                                                          Responsive
-                                                              .textScaleFactor *
-                                                          10,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                            ),
                                           ),
-                                          GestureDetector(
-                                            onTap: () =>
-                                                Navigator.pushReplacementNamed(
-                                                  context,
-                                                  RoutesName.truckLogDetail,
+                                          SizedBox(width: Responsive.w(1)),
+                                          Expanded(
+                                            child: GestureDetector(
+                                              onTap: () =>
+                                                  Navigator.pushReplacementNamed(
+                                                    context,
+                                                    RoutesName.truckLogDetail,
+                                                  ),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: AppColor.primaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(22),
                                                 ),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: AppColor.primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(22),
-                                              ),
-                                              child: Padding(
                                                 padding: const EdgeInsets.all(
                                                   6.0,
                                                 ),
                                                 child: Text(
                                                   "View All Logs",
+                                                  textAlign: TextAlign.center,
                                                   style:
                                                       GoogleFonts.rethinkSans(
                                                         color:
@@ -397,6 +478,18 @@ class TruckLogView extends StatelessWidget {
                                                       ),
                                                 ),
                                               ),
+                                            ),
+                                          ),
+                                          SizedBox(width: Responsive.w(1)),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: AppColor.redColor
+                                                  .withValues(alpha: 0.24),
+                                            ),
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SvgPicture.asset(
+                                              "assets/icons/delete-03.svg",
                                             ),
                                           ),
                                         ],

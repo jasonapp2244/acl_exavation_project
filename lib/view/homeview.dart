@@ -47,7 +47,7 @@ class _HomeviewState extends State<Homeview> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColor.secondaryColor,
+        backgroundColor: AppColor.whiteColor,
         body: ListView(
           children: [
             Column(
@@ -309,7 +309,7 @@ class _HomeviewState extends State<Homeview> {
                   ),
                 ),
                 CustomFilterDropdown(
-                  options: ["On Site", "Departed"],
+                  options: ["On Site", "Departed", "All View"],
                   initialValue: _selectedStatus,
                   onChanged: (value) {
                     setState(() {
@@ -320,16 +320,19 @@ class _HomeviewState extends State<Homeview> {
               ],
             ),
 
-            _buildActiveTrucksList(truckProvider,_selectedStatus),
+            _buildActiveTrucksList(truckProvider, _selectedStatus),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildActiveTrucksList(TruckEntryViewModel truckProvider, String selectedStatus) {
+  Widget _buildActiveTrucksList(
+    TruckEntryViewModel truckProvider,
+    String selectedStatus,
+  ) {
     return StreamBuilder<List<TruckDriverRecordModel>>(
-      stream: truckProvider.truckEntriesStream( selectedStatus),
+      stream: truckProvider.truckEntriesStream(selectedStatus),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -347,13 +350,15 @@ class _HomeviewState extends State<Homeview> {
         return ListView.builder(
           shrinkWrap: true,
           itemCount: entries.length,
+          physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             final truck = entries[index];
             return CustomTruckEntryCardWidget(
-            id : truck.id,
+              id: truck.id,
               truckNumber: truck.truckNumber,
               status: truck.status,
               timeIn: truck.timeIn,
+              timeOut: truck.timeOut,
               driverName: truck.driverName,
               driverRole: truck.driverRole,
               onTimeOutPressed: () {},
