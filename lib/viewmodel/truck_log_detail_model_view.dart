@@ -76,45 +76,47 @@ class TruckLogDetailController extends ChangeNotifier {
   //   }
   // }
   // Process the Firestore snapshot
-Future<void> deleteTruckLog(String truckNumber, String logId) async {
-  try {
-    final user = _auth.currentUser;
-    if (user == null) return;
+  Future<void> deleteTruckLog(String truckNumber, String logId) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return;
 
-    // Step 1: Find parent truck entry by truckNumber
-    final querySnapshot = await _firestore
-        .collection('users')
-        .doc(user.uid)
-        .collection('truck_entries')
-        .where('truckNumber', isEqualTo: truckNumber)
-        .limit(1)
-        .get();
+      // Step 1: Find parent truck entry by truckNumber
+      final querySnapshot = await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('truck_entries')
+          .where('truckNumber', isEqualTo: truckNumber)
+          .limit(1)
+          .get();
 
-    if (querySnapshot.docs.isEmpty) {
-      _error = "No truck found with number $truckNumber";
+      if (querySnapshot.docs.isEmpty) {
+        _error = "No truck found with number $truckNumber";
+        notifyListeners();
+        return;
+      }
+
+      // Step 2: Get the parent document ID
+      final parentDocId = querySnapshot.docs.first.id;
+
+      // Step 3: Delete the log
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('truck_entries')
+          .doc(parentDocId)
+          .collection('logs')
+          .doc(logId)
+          .delete();
+
+      print(
+        "Log $logId deleted successfully from truck $truckNumber ($parentDocId)",
+      );
+    } catch (e) {
+      _error = "Error deleting log: $e";
       notifyListeners();
-      return;
     }
-
-    // Step 2: Get the parent document ID
-    final parentDocId = querySnapshot.docs.first.id;
-
-    // Step 3: Delete the log
-    await _firestore
-        .collection('users')
-        .doc(user.uid)
-        .collection('truck_entries')
-        .doc(parentDocId)
-        .collection('logs')
-        .doc(logId)
-        .delete();
-
-    print("Log $logId deleted successfully from truck $truckNumber ($parentDocId)");
-  } catch (e) {
-    _error = "Error deleting log: $e";
-    notifyListeners();
   }
-}
 
   Future<void> loadTruckLogs(String truckNumber) async {
     if (truckNumber.isEmpty) return;
@@ -246,7 +248,6 @@ Future<void> deleteTruckLog(String truckNumber, String logId) async {
       notifyListeners();
     }
   }
-
 
   // Clear all data
   void clearData() {
