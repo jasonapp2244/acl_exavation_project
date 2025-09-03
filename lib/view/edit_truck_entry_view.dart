@@ -29,11 +29,9 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
     super.initState();
     // Fetch truck record when widget initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.recordId != null) {
-        context.read<EditTruckEntryController>().fetchTruckRecord(
-          widget.recordId!,
-        );
-      }
+      context.read<EditTruckEntryController>().fetchTruckRecordByTruckNumber(
+        widget.truckNumber!,
+      );
     });
   }
 
@@ -258,7 +256,9 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
                             ? () {}
                             : () {
                                 if (_formKey.currentState!.validate()) {
-                                  controller.updateTruckRecord();
+                                  controller.updateTruckRecordByTruckNumber(
+                                    widget.truckNumber ?? '',
+                                  );
                                 }
                               },
                       ),

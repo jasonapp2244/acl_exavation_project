@@ -57,11 +57,51 @@ class EditTruckEntryController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Fetch truck record by ID
-  Future<void> fetchTruckRecord(String recordId) async {
+  // // Fetch truck record by ID
+  // Future<void> fetchTruckRecord(String recordId) async {
+  //   _isLoading = true;
+  //   _error = null;
+  //   _recordId = recordId;
+  //   notifyListeners();
+
+  //   try {
+  //     final user = _auth.currentUser;
+  //     if (user == null) {
+  //       _error = "User not authenticated";
+  //       _isLoading = false;
+  //       notifyListeners();
+  //       return;
+  //     }
+  //     final querySnapshot = await _firestore
+  //         .collection('users')
+  //         .doc(user.uid)
+  //         .collection('truck_entries')
+  //         .get();
+
+  //     for (var doc in querySnapshot.docs) {
+  //       final data = doc.data();
+  //       _driverName = data['driverName'] ?? '';
+  //       _truckNumber = data['truckNumber'] ?? '';
+  //       _additionalNotes = data['additionalNotes'] ?? '';
+  //       _licensePlatePhotoPath = data['licensePlatePhoto'] ?? '';
+  //       _status = data['status'] ?? '';
+  //       _timeIn = data['timeIn'] != null
+  //           ? (data['timeIn'] as Timestamp).toDate()
+  //           : null;
+  //     }
+
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   } catch (e) {
+  //     _error = "Error fetching record: $e";
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+
+  Future<void> fetchTruckRecordByTruckNumber(String truckNumber) async {
     _isLoading = true;
     _error = null;
-    _recordId = recordId;
     notifyListeners();
 
     try {
@@ -73,29 +113,31 @@ class EditTruckEntryController extends ChangeNotifier {
         return;
       }
 
-      final doc = await _firestore
+      final querySnapshot = await _firestore
           .collection('users')
           .doc(user.uid)
           .collection('truck_entries')
-          .doc(recordId)
+          .where(
+            'truckNumber',
+            isEqualTo: truckNumber,
+          ) // ✅ filter by truck number
+          .limit(1) // fetch only one
           .get();
 
-      if (!doc.exists) {
-        _error = "Record not found";
-        _isLoading = false;
-        notifyListeners();
-        return;
+      if (querySnapshot.docs.isNotEmpty) {
+        final data = querySnapshot.docs.first.data();
+        _recordId = querySnapshot.docs.first.id;
+        _driverName = data['driverName'] ?? '';
+        _truckNumber = data['truckNumber'] ?? '';
+        _additionalNotes = data['additionalNotes'] ?? '';
+        _licensePlatePhotoPath = data['licensePlatePhoto'] ?? '';
+        _status = data['status'] ?? '';
+        _timeIn = data['timeIn'] != null
+            ? (data['timeIn'] as Timestamp).toDate()
+            : null;
+      } else {
+        _error = "No truck found with number $truckNumber";
       }
-
-      final data = doc.data()!;
-      _driverName = data['driverName'] ?? '';
-      _truckNumber = data['truckNumber'] ?? '';
-      _additionalNotes = data['additionalNotes'] ?? '';
-      _licensePlatePhotoPath = data['licensePlatePhoto'] ?? '';
-      _status = data['status'] ?? '';
-      _timeIn = data['timeIn'] != null
-          ? (data['timeIn'] as Timestamp).toDate()
-          : null;
 
       _isLoading = false;
       notifyListeners();
@@ -106,16 +148,15 @@ class EditTruckEntryController extends ChangeNotifier {
     }
   }
 
-  // Update truck record
-  Future<void> updateTruckRecord() async {
-    if (_recordId == null) {
-      _error = "No record to update";
+  Future<void> updateTruckRecordByTruckNumber(String truckNumber) async {
+    if (truckNumber.isEmpty) {
+      _error = "Truck number required to update";
       notifyListeners();
       return;
     }
 
-    if (_driverName.isEmpty || _truckNumber.isEmpty) {
-      _error = "Driver Name and Truck Number are required!";
+    if (_driverName.isEmpty) {
+      _error = "Driver Name is required!";
       notifyListeners();
       return;
     }
@@ -134,11 +175,31 @@ class EditTruckEntryController extends ChangeNotifier {
         return;
       }
 
+      final querySnapshot = await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('truck_entries')
+          .where(
+            'truckNumber',
+            isEqualTo: truckNumber,
+          ) // ✅ find by truck number
+          .limit(1) // get only first match
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        _error = "No record found for truck number $truckNumber";
+        _isSaving = false;
+        notifyListeners();
+        return;
+      }
+
+      final docId = querySnapshot.docs.first.id;
+
       await _firestore
           .collection('users')
           .doc(user.uid)
           .collection('truck_entries')
-          .doc(_recordId)
+          .doc(docId)
           .update({
             'driverName': _driverName,
             'truckNumber': _truckNumber,

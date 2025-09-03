@@ -105,7 +105,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                                           create: (context) =>
                                               EditTruckEntryController(),
                                           child: EditTruckEntryView(
-                                            recordId: mostRecentRecord.id,
+                                           
                                             truckNumber: widget.truckNumber,
                                           ),
                                         ),
