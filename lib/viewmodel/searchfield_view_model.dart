@@ -18,11 +18,7 @@ class SearchViewModel with ChangeNotifier {
         .where('isActive', isEqualTo: 1);
 
     if (searchText.isNotEmpty) {
-      final normalizedText = searchText.trim().toUpperCase();
-      final endText = normalizedText + '\uf8ff';
-      query = query
-          .where('truckNumber', isGreaterThanOrEqualTo: normalizedText)
-          .where('truckNumber', isLessThanOrEqualTo: endText);
+      query = query.where('truckNumber', isEqualTo: searchText.trim());
     }
 
     return query.snapshots().map((snapshot) {
@@ -31,4 +27,34 @@ class SearchViewModel with ChangeNotifier {
           .toList();
     });
   }
+}
+
+Stream<List<TruckDriverRecordModel>> truckEntriesStream({
+  String searchText = "",
+}) {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) throw Exception("User not logged in");
+
+  Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .collection('truck_entries')
+      .where('isActive', isEqualTo: 1);
+
+  if (searchText.isNotEmpty) {
+    query = query.where('truckNumber', isEqualTo: searchText.trim());
+  }
+  if (searchText.isNotEmpty) {
+    query = query
+        .where('truckNumber', isGreaterThanOrEqualTo: searchText.trim())
+        .where(
+          'truckNumber',
+          isLessThanOrEqualTo: '${searchText.trim()}\uf8ff',
+        );
+  }
+  return query.snapshots().map((snapshot) {
+    return snapshot.docs
+        .map((doc) => TruckDriverRecordModel.fromFirestore(doc))
+        .toList();
+  });
 }
