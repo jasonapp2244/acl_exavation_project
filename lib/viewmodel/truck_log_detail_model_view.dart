@@ -104,6 +104,9 @@ class TruckLogDetailController extends ChangeNotifier {
           .limit(1) // assuming only one active entry per truck
           .get();
 
+      final data = parentSnapshot.docs[0].data(); // Map<String, dynamic>
+      _driverName = data['driverName'] ?? '';
+
       if (parentSnapshot.docs.isEmpty) {
         _error = "No entry found for this truck";
         _isLoading = false;
@@ -151,7 +154,7 @@ class TruckLogDetailController extends ChangeNotifier {
       if (snapshot.docs.isEmpty) {
         print('No documents found for truck: $truckNumber');
         _truckLogs = [];
-        _driverName = "No driver found";
+        //  _driverName = "No driver found";
         _isLoading = false;
         _error = null;
         notifyListeners();
@@ -184,7 +187,7 @@ class TruckLogDetailController extends ChangeNotifier {
 
       // Update the driver name from the first record
       if (records.isNotEmpty) {
-        _driverName = records.first.driverName ?? '';
+        //   _driverName = records.first.driverName ?? '';
         print('Driver name set to: $_driverName');
       } else {
         _driverName = "No driver found";
@@ -231,7 +234,7 @@ class TruckLogDetailController extends ChangeNotifier {
   void clearData() {
     _truckLogs = [];
     _allTruckLogs = [];
-    _driverName = "Loading...";
+    //_driverName = "Loading...";
     _isLoading = true;
     _error = null;
     _selectedDate = null;

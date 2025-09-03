@@ -94,24 +94,19 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                           GestureDetector(
                             onTap: () {
                               // Get the most recent record for this truck
-                              if (controller.allTruckLogs.isNotEmpty) {
-                                final mostRecentRecord =
-                                    controller.allTruckLogs.first;
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChangeNotifierProvider(
-                                          create: (context) =>
-                                              EditTruckEntryController(),
-                                          child: EditTruckEntryView(
-                                           
-                                            truckNumber: widget.truckNumber,
-                                          ),
-                                        ),
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                    create: (context) =>
+                                        EditTruckEntryController(),
+                                    child: EditTruckEntryView(
+                                      truckNumber: widget.truckNumber,
+                                    ),
                                   ),
-                                );
-                              }
+                                ),
+                              );
                             },
                             child: Container(
                               decoration: BoxDecoration(
