@@ -295,18 +295,63 @@ class TruckEntryViewModel extends ChangeNotifier {
     });
   }
 
+  // Future<void> recordTimeIn(String docId) async {
+  //   try {
+  //     await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(FirebaseAuth.instance.currentUser!.uid)
+  //         .collection('truck_entries')
+  //         .doc(docId)
+  //         .update({
+  //           'timeIn': DateTime.now(),
+  //           'status': 'On Site',
+  //           'isActive': 1,
+  //         });
+  //   } catch (e) {
+  //     debugPrint("Error recording Time In: $e");
+  //     rethrow;
+  //   }
+  // }
+
+  // Future<void> recordTimeOut(String docId) async {
+  //   try {
+  //     await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(FirebaseAuth.instance.currentUser!.uid)
+  //         .collection('truck_entries')
+  //         .doc(docId)
+  //         .update({
+  //           'timeOut': DateTime.now(),
+  //           'status': 'Departed',
+  //           'isActive': 1,
+  //         });
+  //   } catch (e) {
+  //     debugPrint("Error recording Time Out: $e");
+  //     rethrow;
+  //   }
+  // }
   Future<void> recordTimeIn(String docId) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final now = DateTime.now();
+
     try {
-      await FirebaseFirestore.instance
+      final docRef = FirebaseFirestore.instance
           .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .doc(userId)
           .collection('truck_entries')
-          .doc(docId)
-          .update({
-            'timeIn': DateTime.now(),
-            'status': 'On Site',
-            'isActive': 1,
-          });
+          .doc(docId);
+
+      // Update main ticket
+      final updateData = {'timeIn': now, 'status': 'On Site', 'isActive': 1};
+      await docRef.update(updateData);
+
+      // Add NEW log (start session)
+      await docRef.collection('logs').add({
+        ...updateData,
+        'timestamp': now,
+        'event': 'Time In',
+        'timeOut': null, // open until timeout
+      });
     } catch (e) {
       debugPrint("Error recording Time In: $e");
       rethrow;
@@ -314,17 +359,46 @@ class TruckEntryViewModel extends ChangeNotifier {
   }
 
   Future<void> recordTimeOut(String docId) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final now = DateTime.now();
+
     try {
-      await FirebaseFirestore.instance
+      final docRef = FirebaseFirestore.instance
           .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .doc(userId)
           .collection('truck_entries')
-          .doc(docId)
-          .update({
-            'timeOut': DateTime.now(),
-            'status': 'Departed',
-            'isActive': 1,
-          });
+          .doc(docId);
+
+      // Update main ticket
+      final updateData = {'timeOut': now, 'status': 'Departed', 'isActive': 1};
+      await docRef.update(updateData);
+
+      // 🔎 Find the most recent "open" Time In log (no timeOut yet)
+      final logsQuery = await docRef
+          .collection('logs')
+          .where('event', isEqualTo: 'Time In')
+          .where('timeOut', isNull: true)
+          .orderBy('timestamp', descending: true)
+          .limit(1)
+          .get();
+
+      if (logsQuery.docs.isNotEmpty) {
+        // Update the same log with timeOut
+        final logDocId = logsQuery.docs.first.id;
+        await docRef.collection('logs').doc(logDocId).update({
+          'timeOut': now,
+          'event': 'Completed', // or keep it as "Time In + Time Out"
+          'timestamp': now,
+        });
+      } else {
+        // 🚨 Fallback: no open log found → create a standalone Time Out log
+        await docRef.collection('logs').add({
+          ...updateData,
+          'timestamp': now,
+          'event': 'Time Out',
+          'timeIn': (await docRef.get()).data()?['timeIn'],
+        });
+      }
     } catch (e) {
       debugPrint("Error recording Time Out: $e");
       rethrow;

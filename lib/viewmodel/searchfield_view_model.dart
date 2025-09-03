@@ -18,7 +18,11 @@ class SearchViewModel with ChangeNotifier {
         .where('isActive', isEqualTo: 1);
 
     if (searchText.isNotEmpty) {
-      query = query.where('truckNumber', isEqualTo: searchText.trim());
+      final normalizedText = searchText.trim().toUpperCase();
+      final endText = normalizedText + '\uf8ff';
+      query = query
+          .where('truckNumber', isGreaterThanOrEqualTo: normalizedText)
+          .where('truckNumber', isLessThanOrEqualTo: endText);
     }
 
     return query.snapshots().map((snapshot) {

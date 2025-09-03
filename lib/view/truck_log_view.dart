@@ -1,8 +1,13 @@
+import 'package:acl/model/truck_driver_record_model.dart';
+import 'package:acl/model/truck_log_detail_model.dart';
+import 'package:acl/model/truck_log_record_model.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/responsive.dart';
 import 'package:acl/utils/routes/routes_name.dart';
 import 'package:acl/view/widgets/custom_title.dart';
+import 'package:acl/view/widgets/custom_truck_log_card.dart';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -175,331 +180,52 @@ class TruckLogView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: 15,
-                          itemBuilder: ((context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8.0,
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(22),
-                                  color: AppColor.filledColor,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0,
-                                    vertical: 20,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      CustomStatusTile(
-                                        title: 'On Site',
-                                        isOnline: true,
-                                      ),
-                                      SizedBox(width: Responsive.h(2)),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                              "assets/images/Ellipse 2@2x.png",
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              SizedBox(width: Responsive.w(1)),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Ruben Mango",
-                                                    style: GoogleFonts.rethinkSans(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize:
-                                                          Responsive
-                                                              .textScaleFactor *
-                                                          12,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Driver",
-                                                    style: GoogleFonts.rethinkSans(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize:
-                                                          Responsive
-                                                              .textScaleFactor *
-                                                          10,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(width: Responsive.w(1)),
-                                          Row(
-                                            spacing: 8,
-                                            children: [
-                                              SvgPicture.asset(
-                                                "assets/icons/truck.svg",
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Truck No",
-                                                    style: GoogleFonts.rethinkSans(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize:
-                                                          Responsive
-                                                              .textScaleFactor *
-                                                          12,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "LHE-2233",
-                                                    style: GoogleFonts.rethinkSans(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize:
-                                                          Responsive
-                                                              .textScaleFactor *
-                                                          10,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Container(
-                                                height:
-                                                    20, // or match other elements in the row
-                                                width: 1,
-                                                color: AppColor.filletextdColor,
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Total Logs",
-                                                    style: GoogleFonts.rethinkSans(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize:
-                                                          Responsive
-                                                              .textScaleFactor *
-                                                          12,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "12 trips recorded",
-                                                    style: GoogleFonts.rethinkSans(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize:
-                                                          Responsive
-                                                              .textScaleFactor *
-                                                          10,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: Responsive.h(1)),
-                                      Row(
-                                        children: [Expanded(child: Divider())],
-                                      ),
-                                      SizedBox(height: Responsive.h(1)),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          // Left Circle
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Time-In",
-                                                style: GoogleFonts.rethinkSans(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize:
-                                                      Responsive
-                                                          .textScaleFactor *
-                                                      12,
-                                                ),
-                                              ),
-                                              Text(
-                                                "07:55 PM",
-                                                style: GoogleFonts.rethinkSans(
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize:
-                                                      Responsive
-                                                          .textScaleFactor *
-                                                      10,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(width: 5),
-                                          Container(
-                                            width: 10,
-                                            height: 10,
-                                            decoration: BoxDecoration(
-                                              color: AppColor.textColor,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                          // SizedBox(width: 5),
-                                          // Dotted Line
-                                          Expanded(
-                                            child: DottedLine(
-                                              dashLength: 4,
-                                              dashGapLength: 4,
-                                              lineThickness: 1,
-                                              dashColor: AppColor.textColor,
-                                            ),
-                                          ),
-                                          // SizedBox(width: 5),
-                                          // Right Circle
-                                          Container(
-                                            width: 10,
-                                            height: 10,
-                                            decoration: BoxDecoration(
-                                              color: AppColor.textColor,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                          SizedBox(width: 5),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Time-Out",
-                                                style: GoogleFonts.rethinkSans(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize:
-                                                      Responsive
-                                                          .textScaleFactor *
-                                                      12,
-                                                ),
-                                              ),
-                                              Text(
-                                                "09:10 PM",
-                                                style: GoogleFonts.rethinkSans(
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize:
-                                                      Responsive
-                                                          .textScaleFactor *
-                                                      10,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
 
-                                      SizedBox(height: Responsive.h(1)),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: GestureDetector(
-                                              onTap: () =>
-                                                  Navigator.pushReplacementNamed(
-                                                    context,
-                                                    RoutesName.eidtTruckEntry,
-                                                  ),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: AppColor.primaryColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(22),
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      vertical: 5.0,
-                                                      horizontal: 10.0,
-                                                    ),
-                                                child: Text(
-                                                  "Edit",
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.rethinkSans(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize:
-                                                        Responsive
-                                                            .textScaleFactor *
-                                                        14,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: Responsive.w(1)),
-                                          Expanded(
-                                            child: GestureDetector(
-                                              onTap: () =>
-                                                  Navigator.pushReplacementNamed(
-                                                    context,
-                                                    RoutesName.truckLogDetail,
-                                                  ),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: AppColor.primaryColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(22),
-                                                ),
-                                                padding: const EdgeInsets.all(
-                                                  6.0,
-                                                ),
-                                                child: Text(
-                                                  "View All Logs",
-                                                  textAlign: TextAlign.center,
-                                                  style:
-                                                      GoogleFonts.rethinkSans(
-                                                        color:
-                                                            AppColor.textColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: Responsive.w(1)),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: AppColor.redColor
-                                                  .withValues(alpha: 0.24),
-                                            ),
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: SvgPicture.asset(
-                                              "assets/icons/delete-03.svg",
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                      Expanded(
+                        child: StreamBuilder<List<TruckDriverRecordModel>>(
+                          stream: TruckLogDetailModelController()
+                              .truckEntriesStream(
+                                date:
+                                    DateTime.now(), // optional, pass specific date if needed
                               ),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
+                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(child: Text("No logs found"));
+                            }
+
+                            final logs = snapshot.data!;
+
+                            return ListView.builder(
+                              itemCount: logs.length,
+                              itemBuilder: (context, index) {
+                                final log = logs[index];
+                                return CustomTruckEntryCard(
+                                  driverName: log.driverName,
+                                  role: 'Driver',
+                                  truckNumber: log.truckNumber,
+                                  totalLogs: logs.length,
+                                  timeIn: log.timeIn.toString(),
+                                  timeOut: log.timeOut.toString(),
+                                  onDelete: () {
+                                    // Handle delete
+                                  },
+                                  onEdit: () {
+                                    // Handle edit
+                                  },
+                                  onViewLogs: () {
+                                    // Handle view logs
+                                  },
+                                );
+                              },
                             );
-                          }),
+                          },
                         ),
                       ),
                     ],

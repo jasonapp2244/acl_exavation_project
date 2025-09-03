@@ -80,188 +80,190 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
               padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
-                child: Column(
-                  children: [
-                    // Loading indicator
-                    if (controller.isLoading)
-                      Center(
-                        child: CircularProgressIndicator(
-                          color: AppColor.primaryColor,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // Loading indicator
+                      if (controller.isLoading)
+                        Center(
+                          child: CircularProgressIndicator(
+                            color: AppColor.primaryColor,
+                          ),
                         ),
-                      ),
 
-                    // Error Message
-                    if (controller.error != null)
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(12),
-                        margin: EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.red.shade200),
+                      // Error Message
+                      if (controller.error != null)
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(12),
+                          margin: EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.red.shade200),
+                          ),
+                          child: Text(
+                            controller.error!,
+                            style: GoogleFonts.rethinkSans(
+                              color: Colors.red.shade700,
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
-                        child: Text(
-                          controller.error!,
-                          style: GoogleFonts.rethinkSans(
-                            color: Colors.red.shade700,
-                            fontSize: 14,
+
+                      // Success Message
+                      if (controller.successMessage != null)
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(12),
+                          margin: EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: AppColor.primaryColor,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: AppColor.primaryColor),
+                          ),
+                          child: Text(
+                            controller.successMessage!,
+                            style: GoogleFonts.rethinkSans(
+                              color: AppColor.whiteColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+
+                      // Driver Name Field
+                      TextFormField(
+                        controller: _driverNameController,
+                        style: GoogleFonts.rethinkSans(),
+                        textCapitalization: TextCapitalization.words,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Driver name is required';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) => controller.setDriverName(value),
+                        decoration: InputDecoration(
+                          fillColor: AppColor.filledColor,
+                          filled: true,
+
+                          hintText: "Driver Name",
+                          hintStyle: GoogleFonts.rethinkSans(
+                            color: AppColor.filletextdColor,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: AppColor.filledColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: AppColor.filledColor),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: Colors.red.shade300),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: Colors.red.shade500),
                           ),
                         ),
                       ),
+                      SizedBox(height: Responsive.h(2)),
 
-                    // Success Message
-                    if (controller.successMessage != null)
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(12),
-                        margin: EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: AppColor.primaryColor,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColor.primaryColor),
-                        ),
-                        child: Text(
-                          controller.successMessage!,
-                          style: GoogleFonts.rethinkSans(
-                            color: AppColor.whiteColor,
-                            fontSize: 14,
+                      // Truck Number Field
+                      TextFormField(
+                        controller: _truckNumberController,
+                        style: GoogleFonts.rethinkSans(),
+                        textCapitalization: TextCapitalization.characters,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Truck number is required';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) => controller.setTruckNumber(value),
+                        decoration: InputDecoration(
+                          fillColor: AppColor.filledColor,
+                          filled: true,
+
+                          hintText: "Truck Number",
+                          hintStyle: GoogleFonts.rethinkSans(
+                            color: AppColor.filletextdColor,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: AppColor.filledColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: AppColor.filledColor),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: Colors.red.shade300),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: Colors.red.shade500),
                           ),
                         ),
                       ),
+                      SizedBox(height: Responsive.h(2)),
 
-                    // Driver Name Field
-                    TextFormField(
-                      controller: _driverNameController,
-                      style: GoogleFonts.rethinkSans(),
-                      textCapitalization: TextCapitalization.words,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Driver name is required';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) => controller.setDriverName(value),
-                      decoration: InputDecoration(
-                        fillColor: AppColor.filledColor,
-                        filled: true,
-
-                        hintText: "Driver Name",
-                        hintStyle: GoogleFonts.rethinkSans(
-                          color: AppColor.filletextdColor,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: AppColor.filledColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: AppColor.filledColor),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: Colors.red.shade300),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: Colors.red.shade500),
+                      // Additional Notes Field
+                      TextFormField(
+                        controller: _additionalNotesController,
+                        style: GoogleFonts.rethinkSans(),
+                        maxLines: 3,
+                        onChanged: (value) =>
+                            controller.setAdditionalNotes(value),
+                        decoration: InputDecoration(
+                          fillColor: AppColor.filledColor,
+                          filled: true,
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.only(bottom: 32.0),
+                          ),
+                          hintText: "Additional Notes (Optional)",
+                          hintStyle: GoogleFonts.rethinkSans(
+                            color: AppColor.filletextdColor,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: AppColor.filledColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: AppColor.filledColor),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: Colors.red.shade300),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                            borderSide: BorderSide(color: Colors.red.shade500),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: Responsive.h(2)),
+                      SizedBox(height: Responsive.h(3)),
+                      _buildLicensePlateUpload(controller),
+                      SizedBox(height: Responsive.h(2)),
 
-                    // Truck Number Field
-                    TextFormField(
-                      controller: _truckNumberController,
-                      style: GoogleFonts.rethinkSans(),
-                      textCapitalization: TextCapitalization.characters,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Truck number is required';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) => controller.setTruckNumber(value),
-                      decoration: InputDecoration(
-                        fillColor: AppColor.filledColor,
-                        filled: true,
-
-                        hintText: "Truck Number",
-                        hintStyle: GoogleFonts.rethinkSans(
-                          color: AppColor.filletextdColor,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: AppColor.filledColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: AppColor.filledColor),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: Colors.red.shade300),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: Colors.red.shade500),
-                        ),
+                      // Save Button
+                      AuthButton(
+                        buttonText: 'Update Truck Entry',
+                        loading: controller.isSaving,
+                        onPress: controller.isSaving
+                            ? () {}
+                            : () {
+                                if (_formKey.currentState!.validate()) {
+                                  controller.updateTruckRecord();
+                                }
+                              },
                       ),
-                    ),
-                    SizedBox(height: Responsive.h(2)),
-
-                    // Additional Notes Field
-                    TextFormField(
-                      controller: _additionalNotesController,
-                      style: GoogleFonts.rethinkSans(),
-                      maxLines: 3,
-                      onChanged: (value) =>
-                          controller.setAdditionalNotes(value),
-                      decoration: InputDecoration(
-                        fillColor: AppColor.filledColor,
-                        filled: true,
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.only(bottom: 32.0),
-                        ),
-                        hintText: "Additional Notes (Optional)",
-                        hintStyle: GoogleFonts.rethinkSans(
-                          color: AppColor.filletextdColor,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: AppColor.filledColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: AppColor.filledColor),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: Colors.red.shade300),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide(color: Colors.red.shade500),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: Responsive.h(3)),
-                    _buildLicensePlateUpload(controller),
-                    SizedBox(height: Responsive.h(2)),
-
-                    // Save Button
-                    AuthButton(
-                      buttonText: 'Update Truck Entry',
-                      loading: controller.isSaving,
-                      onPress: controller.isSaving
-                          ? () {}
-                          : () {
-                              if (_formKey.currentState!.validate()) {
-                                controller.updateTruckRecord();
-                              }
-                            },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

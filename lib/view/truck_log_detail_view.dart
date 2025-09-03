@@ -310,14 +310,14 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
               ),
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                if (widget.truckNumber != null) {
-                  controller.refreshData(widget.truckNumber!);
-                }
-              },
-              child: Text("Refresh"),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     if (widget.truckNumber != null) {
+            //       controller.refreshData(widget.truckNumber!);
+            //     }
+            //   },
+            //   child: Text("Refresh", style: TextStyle(color: Colors.white)),
+            // ),
           ],
         ),
       );
@@ -371,7 +371,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                                 //   ),
                                 // ),
                                 Text(
-                                  record.status,
+                                  record.status ?? '',
                                   style: GoogleFonts.rethinkSans(
                                     fontWeight: FontWeight.normal,
                                     fontSize: Responsive.textScaleFactor * 10,
@@ -382,9 +382,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                           ],
                         ),
                         GestureDetector(
-                          onTap: () {
-                            controller.deleteTruckLog(record.id);
-                          },
+                          onTap: () {},
                           child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,

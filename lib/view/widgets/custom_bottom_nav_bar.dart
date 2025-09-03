@@ -1,3 +1,4 @@
+import 'package:acl/res/components/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_navigation_bar/responsive_navigation_bar.dart';
 
@@ -19,11 +20,12 @@ class CustomBottomNavigationBar extends StatefulWidget {
 class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(color: AppColor.whiteColor),
       width: MediaQuery.of(context).size.width,
       child: ResponsiveNavigationBar(
         backgroundColor: Colors.black,
-
+ 
         activeIconColor: const Color(0xff111B19),
         showActiveButtonText: true,
 

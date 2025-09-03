@@ -27,8 +27,8 @@ class AddTruckEnteryView extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      _buildHeaderImage(),
-                      SizedBox(height: Responsive.h(1)),
+                      // _buildHeaderImage(),
+                      //  SizedBox(height: Responsive.h(1)),
                       _buildDriverNameField(truckProvider),
                       SizedBox(height: Responsive.h(1)),
                       _buildAdditionalNotesField(truckProvider),

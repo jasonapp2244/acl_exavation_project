@@ -24,11 +24,62 @@ class TruckLogDetailController extends ChangeNotifier {
   String? get error => _error;
   DateTime? get selectedDate => _selectedDate;
 
-  // Load truck logs for a specific truck number
+  // // Load truck logs for a specific truck number
+  // Future<void> loadTruckLogs(String truckNumber) async {
+  //   if (truckNumber.isEmpty) return;
+
+  //   // Cancel any existing subscription
+  //   await _subscription?.cancel();
+
+  //   _isLoading = true;
+  //   _error = null;
+  //   notifyListeners();
+
+  //   try {
+  //     final user = _auth.currentUser;
+  //     if (user == null) {
+  //       _error = "User not authenticated";
+  //       _isLoading = false;
+  //       notifyListeners();
+  //       return;
+  //     }
+
+  //     print('Loading truck logs for truck: $truckNumber');
+  //     print('User ID: ${user.uid}');
+
+  //     // Get the stream for truck entries
+  //     final stream = _firestore
+  //         .collection('users')
+  //         .doc(user.uid)
+  //         .collection('truck_entries')
+  //         .where('truckNumber', isEqualTo: truckNumber.trim())
+  //         .snapshots();
+
+  //     // Listen to the stream and store the subscription
+  //     _subscription = stream.listen(
+  //       (snapshot) {
+  //         print('Received snapshot with ${snapshot.docs.length} documents');
+  //         _processSnapshot(snapshot, truckNumber);
+  //       },
+  //       onError: (error) {
+  //         print('Stream error: $error');
+  //         _error = "Error loading truck logs: $error";
+  //         _isLoading = false;
+  //         notifyListeners();
+  //       },
+  //     );
+  //   } catch (e) {
+  //     print('Exception in loadTruckLogs: $e');
+  //     _error = "Error loading truck logs: $e";
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+  // Process the Firestore snapshot
+
   Future<void> loadTruckLogs(String truckNumber) async {
     if (truckNumber.isEmpty) return;
 
-    // Cancel any existing subscription
     await _subscription?.cancel();
 
     _isLoading = true;
@@ -44,22 +95,38 @@ class TruckLogDetailController extends ChangeNotifier {
         return;
       }
 
-      print('Loading truck logs for truck: $truckNumber');
-      print('User ID: ${user.uid}');
-
-      // Get the stream for truck entries
-      final stream = _firestore
+      // First find the parent truck entry
+      final parentSnapshot = await _firestore
           .collection('users')
           .doc(user.uid)
           .collection('truck_entries')
           .where('truckNumber', isEqualTo: truckNumber.trim())
+          .limit(1) // assuming only one active entry per truck
+          .get();
+
+      if (parentSnapshot.docs.isEmpty) {
+        _error = "No entry found for this truck";
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+
+      final parentDocId = parentSnapshot.docs.first.id;
+
+      // Now listen to its logs subcollection
+      final stream = _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('truck_entries')
+          .doc(parentDocId)
+          .collection('logs')
+          .orderBy('timestamp', descending: true)
           .snapshots();
 
-      // Listen to the stream and store the subscription
       _subscription = stream.listen(
         (snapshot) {
-          print('Received snapshot with ${snapshot.docs.length} documents');
-          _processSnapshot(snapshot, truckNumber);
+          print("Received ${snapshot.docs.length} logs for $truckNumber");
+          _processSnapshot(snapshot, truckNumber); // ✅ call your helper
         },
         onError: (error) {
           print('Stream error: $error');
@@ -76,7 +143,6 @@ class TruckLogDetailController extends ChangeNotifier {
     }
   }
 
-  // Process the Firestore snapshot
   void _processSnapshot(QuerySnapshot snapshot, String truckNumber) {
     try {
       print('Processing snapshot for truck: $truckNumber');
@@ -118,7 +184,7 @@ class TruckLogDetailController extends ChangeNotifier {
 
       // Update the driver name from the first record
       if (records.isNotEmpty) {
-        _driverName = records.first.driverName;
+        _driverName = records.first.driverName ?? '';
         print('Driver name set to: $_driverName');
       } else {
         _driverName = "No driver found";
@@ -139,25 +205,27 @@ class TruckLogDetailController extends ChangeNotifier {
     }
   }
 
-  // Delete a truck log entry
-  Future<void> deleteTruckLog(String logId) async {
-    try {
-      final user = _auth.currentUser;
-      if (user == null) return;
+  // Future<void> deleteTruckLog(String parentDocId, String logId) async {
+  //   try {
+  //     final user = _auth.currentUser;
+  //     if (user == null) return;
 
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('truck_entries')
-          .doc(logId)
-          .delete();
+  //     await _firestore
+  //         .collection('users')
+  //         .doc(user.uid)
+  //         .collection('truck_entries')
+  //         .doc(parentDocId) // parent ticket
+  //         .collection('logs') // logs subcollection
+  //         .doc(logId) // specific log
+  //         .delete();
 
-      // The stream will automatically update the UI
-    } catch (e) {
-      _error = "Error deleting log: $e";
-      notifyListeners();
-    }
-  }
+  //     print("Log $logId deleted successfully from truck entry $parentDocId");
+  //     // The stream will auto-update UI
+  //   } catch (e) {
+  //     _error = "Error deleting log: $e";
+  //     notifyListeners();
+  //   }
+  // }
 
   // Clear all data
   void clearData() {

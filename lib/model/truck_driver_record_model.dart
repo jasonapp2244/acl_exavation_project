@@ -12,6 +12,7 @@ class TruckDriverRecordModel {
   final int? isActive;
   final DateTime? timeOut;
   final DateTime? timestamp;
+  int? totalLogs;
 
   TruckDriverRecordModel({
     required this.id,
@@ -25,6 +26,7 @@ class TruckDriverRecordModel {
     this.isActive,
     this.timeOut,
     this.timestamp,
+    this.totalLogs,
   });
 
   // Convert Firestore doc to model
@@ -48,6 +50,7 @@ class TruckDriverRecordModel {
       timestamp: data['timestamp'] != null
           ? (data['timestamp'] as Timestamp).toDate()
           : null,
+      totalLogs: data['totalLogs'],
     );
   }
 
@@ -64,6 +67,7 @@ class TruckDriverRecordModel {
       'isActive': isActive,
       'timeOut': timeOut,
       'timestamp': timestamp != null ? Timestamp.fromDate(timestamp!) : null,
+      'totalLogs': totalLogs,
     };
   }
 }
