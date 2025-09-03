@@ -1,22 +1,24 @@
 import 'package:acl/model/truck_driver_record_model.dart';
-import 'package:acl/model/truck_log_detail_model.dart';
-import 'package:acl/model/truck_log_record_model.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/responsive.dart';
 import 'package:acl/utils/routes/routes_name.dart';
-import 'package:acl/view/widgets/custom_title.dart';
+import 'package:acl/view/edit_truck_entry_view.dart';
+import 'package:acl/view/truck_log_detail_view.dart';
 import 'package:acl/view/widgets/custom_truck_log_card.dart';
-import 'package:dotted_line/dotted_line.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
+import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
+import 'package:acl/viewmodel/truck_logs_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class TruckLogView extends StatelessWidget {
   const TruckLogView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of<TruckLogsViewModel>(context, listen: true);
     Responsive.init(context);
     return Scaffold(
       backgroundColor: AppColor.secondaryColor,
@@ -54,18 +56,6 @@ class TruckLogView extends StatelessWidget {
                             fontSize: Responsive.textScaleFactor * 26,
                           ),
                         ),
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //     shape: BoxShape.circle,
-                        //     color: AppColor.whiteColor.withValues(alpha: 0.2),
-                        //   ),
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.all(12.0),
-                        //     child: SvgPicture.asset(
-                        //       "assets/icons/notificsation.svg",
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ),
                     SizedBox(height: Responsive.h(1)),
@@ -169,6 +159,7 @@ class TruckLogView extends StatelessWidget {
                   child: Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             "Showing logs from",
@@ -178,16 +169,120 @@ class TruckLogView extends StatelessWidget {
                               fontSize: Responsive.textScaleFactor * 16,
                             ),
                           ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  // Date Filter Button
+                                  GestureDetector(
+                                    onTap: () async {
+                                      final DateTime?
+                                      picked = await showDatePicker(
+                                        context: context,
+                                        initialDate:
+                                            controller.selectedDate ??
+                                            DateTime.now(),
+                                        firstDate: DateTime(2020),
+                                        lastDate: DateTime.now(),
+                                        builder: (context, child) {
+                                          return Theme(
+                                            data: Theme.of(context).copyWith(
+                                              colorScheme: ColorScheme.light(
+                                                primary: AppColor.primaryColor,
+                                                onPrimary: AppColor.whiteColor,
+                                                onSurface: AppColor.textColor,
+                                              ),
+                                            ),
+                                            child: child!,
+                                          );
+                                        },
+                                      );
+                                      if (picked != null) {
+                                        controller.setSelectedDate(picked);
+                                      }
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColor.primaryColor,
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0,
+                                        horizontal: 16.0,
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SvgPicture.asset(
+                                            "assets/icons/calander.svg",
+                                            width: 16,
+                                            height: 16,
+                                            colorFilter: ColorFilter.mode(
+                                              AppColor.whiteColor,
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
+                                          SizedBox(width: 6),
+                                          Text(
+                                            controller.selectedDate != null
+                                                ? "${controller.selectedDate!.day}/${controller.selectedDate!.month}/${controller.selectedDate!.year}"
+                                                : "Select Date",
+
+                                            style: GoogleFonts.rethinkSans(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize:
+                                                  Responsive.textScaleFactor *
+                                                  12,
+                                              color: AppColor.whiteColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  // Clear Filter Button
+                                  if (controller.selectedDate != null)
+                                    GestureDetector(
+                                      onTap: () {
+                                        controller.clearDateFilter();
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColor.redColor,
+                                          borderRadius: BorderRadius.circular(
+                                            22,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0,
+                                          horizontal: 12.0,
+                                        ),
+                                        child: Text(
+                                          "Clear",
+                                          style: GoogleFonts.rethinkSans(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                Responsive.textScaleFactor * 12,
+                                            color: AppColor.whiteColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ],
                       ),
 
                       Expanded(
                         child: StreamBuilder<List<TruckDriverRecordModel>>(
-                          stream: TruckLogDetailModelController()
-                              .truckEntriesStream(
-                                date:
-                                    DateTime.now(), // optional, pass specific date if needed
-                              ),
+                          stream: controller.latestLogsForDateStream(
+                            date: controller.selectedDate ?? DateTime.now(),
+                          ),
+
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -217,10 +312,34 @@ class TruckLogView extends StatelessWidget {
                                     // Handle delete
                                   },
                                   onEdit: () {
-                                    // Handle edit
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ChangeNotifierProvider(
+                                              create: (context) =>
+                                                  EditTruckEntryModelView(),
+                                              child: EditTruckEntryView(
+                                                truckNumber: log.truckNumber,
+                                              ),
+                                            ),
+                                      ),
+                                    );
                                   },
                                   onViewLogs: () {
-                                    // Handle view logs
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ChangeNotifierProvider(
+                                              create: (context) =>
+                                                  TruckLogDetailViewModel(),
+                                              child: TruckLogDetailView(
+                                                truckNumber: log.truckNumber,
+                                              ),
+                                            ),
+                                      ),
+                                    );
                                   },
                                 );
                               },

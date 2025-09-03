@@ -1,8 +1,8 @@
+import 'package:acl/view/widgets/custom_delete_popup.dart';
 import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
 import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/responsive.dart';
-import 'package:acl/utils/routes/routes_name.dart';
 import 'package:acl/view/edit_truck_entry_view.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
     // Load data when the widget initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.truckNumber != null) {
-        context.read<TruckLogDetailController>().loadTruckLogs(
+        context.read<TruckLogDetailViewModel>().loadTruckLogs(
           widget.truckNumber!,
         );
       }
@@ -47,7 +47,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
       body: SafeArea(
         child: Padding(
           padding: Responsive.padding(left: 4, right: 4, top: 2, bottom: 4),
-          child: Consumer<TruckLogDetailController>(
+          child: Consumer<TruckLogDetailViewModel>(
             builder: (context, controller, child) {
               return Column(
                 children: [
@@ -100,7 +100,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                                 MaterialPageRoute(
                                   builder: (context) => ChangeNotifierProvider(
                                     create: (context) =>
-                                        EditTruckEntryController(),
+                                        EditTruckEntryModelView(),
                                     child: EditTruckEntryView(
                                       truckNumber: widget.truckNumber,
                                     ),
@@ -252,7 +252,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
     );
   }
 
-  Widget _buildContent(TruckLogDetailController controller) {
+  Widget _buildContent(TruckLogDetailViewModel controller) {
     if (controller.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -305,14 +305,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
               ),
             ),
             SizedBox(height: 16),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     if (widget.truckNumber != null) {
-            //       controller.refreshData(widget.truckNumber!);
-            //     }
-            //   },
-            //   child: Text("Refresh", style: TextStyle(color: Colors.white)),
-            // ),
+          
           ],
         ),
       );
@@ -358,13 +351,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                                     fontSize: Responsive.textScaleFactor * 12,
                                   ),
                                 ),
-                                // Text(
-                                //   "Timestamp: ${record.formattedTime}",
-                                //   style: GoogleFonts.rethinkSans(
-                                //     fontWeight: FontWeight.normal,
-                                //     fontSize: Responsive.textScaleFactor * 10,
-                                //   ),
-                                // ),
+                              
                                 Text(
                                   record.status ?? '',
                                   style: GoogleFonts.rethinkSans(
@@ -377,11 +364,8 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                           ],
                         ),
                         GestureDetector(
-                          onTap: () {
-                            controller.deleteTruckLog(
-                              widget.truckNumber.toString(),
-                              record.id.toString(),
-                            );
+                          onTap: () async {
+                            showDeleteTruckDialog( context);
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -485,4 +469,29 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
       ),
     );
   }
+
+ Future<void> showDeleteTruckDialog(BuildContext context) async {
+  final result = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false, // user must tap a button
+    builder: (context) {
+      return CustomDeleteTruckDialog(
+        onConfirm: () {
+          Navigator.of(context).pop(true); // return "Yes"
+        },
+        onCancel: () {
+          Navigator.of(context).pop(false); // return "No"
+        },
+      );
+    },
+  );
+
+  if (result == true) {
+    print("User confirmed delete");
+    // call deleteTruckRecord() here
+  } else {
+    print("User canceled delete");
+  }
+}
+
 }

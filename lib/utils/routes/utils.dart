@@ -1,8 +1,10 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Utils {
   static tosatMassage(String massage) {
@@ -13,6 +15,24 @@ class Utils {
       webBgColor: Colors.red,
       msg: massage,
     );
+  }
+
+  var _storage = FlutterSecureStorage();
+
+  // Save UID after login
+  Future<void> saveUser(User user) async {
+    await _storage.write(key: 'uid', value: user.uid);
+    await _storage.write(key: 'email', value: user.email ?? '');
+  }
+
+  // Get UID
+  Future<String?> getUid() async {
+    return await _storage.read(key: 'uid');
+  }
+
+  // Clear on logout
+  Future<void> clear() async {
+    await _storage.deleteAll();
   }
 
   static void fieldFoucsChange(
@@ -68,6 +88,8 @@ class Utils {
     );
   }
 
+  // Helpe
+
   String getInitials(String name) {
     List<String> names = name.trim().split(" ");
     String initials = "";
@@ -95,8 +117,6 @@ String formatTime(dynamic timeIn) {
     return "--:--";
   }
 }
-
-// Helper method to get current date in the required format
 
 snakBar(String massage, BuildContext context) {
   return ScaffoldMessenger.of(

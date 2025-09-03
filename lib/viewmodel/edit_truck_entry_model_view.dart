@@ -1,9 +1,8 @@
-import 'package:acl/model/truck_driver_record_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class EditTruckEntryController extends ChangeNotifier {
+class EditTruckEntryModelView extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -57,47 +56,6 @@ class EditTruckEntryController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // // Fetch truck record by ID
-  // Future<void> fetchTruckRecord(String recordId) async {
-  //   _isLoading = true;
-  //   _error = null;
-  //   _recordId = recordId;
-  //   notifyListeners();
-
-  //   try {
-  //     final user = _auth.currentUser;
-  //     if (user == null) {
-  //       _error = "User not authenticated";
-  //       _isLoading = false;
-  //       notifyListeners();
-  //       return;
-  //     }
-  //     final querySnapshot = await _firestore
-  //         .collection('users')
-  //         .doc(user.uid)
-  //         .collection('truck_entries')
-  //         .get();
-
-  //     for (var doc in querySnapshot.docs) {
-  //       final data = doc.data();
-  //       _driverName = data['driverName'] ?? '';
-  //       _truckNumber = data['truckNumber'] ?? '';
-  //       _additionalNotes = data['additionalNotes'] ?? '';
-  //       _licensePlatePhotoPath = data['licensePlatePhoto'] ?? '';
-  //       _status = data['status'] ?? '';
-  //       _timeIn = data['timeIn'] != null
-  //           ? (data['timeIn'] as Timestamp).toDate()
-  //           : null;
-  //     }
-
-  //     _isLoading = false;
-  //     notifyListeners();
-  //   } catch (e) {
-  //     _error = "Error fetching record: $e";
-  //     _isLoading = false;
-  //     notifyListeners();
-  //   }
-  // }
 
   Future<void> fetchTruckRecordByTruckNumber(String truckNumber) async {
     _isLoading = true;

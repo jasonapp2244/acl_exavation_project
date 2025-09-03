@@ -20,14 +20,14 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     super.initState();
     // Clear any previous messages when view loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ChangePasswordModel>(context, listen: false).clearMessages();
+      Provider.of<ChangePasswordViewModel>(context, listen: false).clearMessages();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     Responsive.init(context);
-    final changePasswordModel = Provider.of<ChangePasswordModel>(
+    final changePasswordModel = Provider.of<ChangePasswordViewModel>(
       context,
       listen: false,
     );
@@ -35,7 +35,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     return Scaffold(
       backgroundColor: AppColor.whiteColor,
       appBar: _buildAppBar(),
-      body: Consumer<ChangePasswordModel>(
+      body: Consumer<ChangePasswordViewModel>(
         builder: (context, resetModel, child) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -74,7 +74,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   }
 
   // ---------------- STATUS MESSAGES ----------------
-  Widget _buildStatusMessage(ChangePasswordModel resetModel) {
+  Widget _buildStatusMessage(ChangePasswordViewModel resetModel) {
     if (resetModel.errorMessage != null) {
       return _buildMessageBox(
         message: resetModel.errorMessage!,
@@ -111,7 +111,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   }
 
   // ---------------- CURRENT PASSWORD FIELD ----------------
-  Widget _buildCurrentPasswordField(ChangePasswordModel model) {
+  Widget _buildCurrentPasswordField(ChangePasswordViewModel model) {
     return CustomTextField(
       controller: model.oldPasswordController,
       validator: model.validateOldPassword,
@@ -122,8 +122,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
 
   // ---------------- NEW PASSWORD FIELD ----------------
   Widget _buildNewPasswordField(
-    ChangePasswordModel model,
-    ChangePasswordModel resetModel,
+   ChangePasswordViewModel model,
+   ChangePasswordViewModel resetModel,
   ) {
     return CustomTextField(
       controller: model.newPasswordController,
@@ -144,8 +144,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
 
   // ---------------- CONFIRM PASSWORD FIELD ----------------
   Widget _buildConfirmPasswordField(
-    ChangePasswordModel model,
-    ChangePasswordModel resetModel,
+   ChangePasswordViewModel model,
+    ChangePasswordViewModel resetModel,
   ) {
     return CustomTextField(
       controller: model.confirmPasswordController,
@@ -163,8 +163,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
 
   // ---------------- SAVE BUTTON ----------------
   Widget _buildSaveButton(
-    ChangePasswordModel changePasswordModel,
-    ChangePasswordModel resetModel,
+   ChangePasswordViewModel changePasswordModel,
+   ChangePasswordViewModel resetModel,
   ) {
     return AuthButton(
       buttonText: 'Save',

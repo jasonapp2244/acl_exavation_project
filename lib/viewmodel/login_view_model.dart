@@ -1,8 +1,9 @@
 import 'package:acl/utils/routes/routes_name.dart';
+import 'package:acl/utils/routes/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginViewModel extends ChangeNotifier {
+class LoginModelViewModel extends ChangeNotifier {
   String _email = '';
   String _password = '';
   bool _isLoading = false;
@@ -84,14 +85,21 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+  var userCredential =   await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
+ User? user = userCredential.user;
 
+  if (user != null) {
+    print("Signed in as: ${user.uid}");
+    // Optionally save user locally
+     await Utils().saveUser(user);
+  }
       // Clear any previous errors on successful login
       _errorMessage = null;
       notifyListeners();
+      
 
       Navigator.pushReplacementNamed(context, RoutesName.main);
     } on FirebaseAuthException catch (e) {

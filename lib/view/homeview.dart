@@ -30,7 +30,7 @@ class _HomeviewState extends State<Homeview> {
     super.initState();
     // Fetch user profile after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProfileController>(
+      Provider.of<UserProfileModelView>(
         context,
         listen: false,
       ).fetchUserProfile();
@@ -78,7 +78,7 @@ class _HomeviewState extends State<Homeview> {
       ),
       child: Padding(
         padding: Responsive.padding(left: 4, right: 4, top: 2),
-        child: Consumer<UserProfileController>(
+        child: Consumer<UserProfileModelView>(
           builder: (context, profileController, child) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -102,7 +102,7 @@ class _HomeviewState extends State<Homeview> {
   }
 
   // ---------------- PROFILE ROW ----------------
-  Widget _buildProfileRow(UserProfileController profileController) {
+  Widget _buildProfileRow(UserProfileModelView profileController) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -367,7 +367,7 @@ class _HomeviewState extends State<Homeview> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ChangeNotifierProvider(
-                      create: (context) => TruckLogDetailController(),
+                      create: (context) => TruckLogDetailViewModel(),
                       child: TruckLogDetailView(truckNumber: truck.truckNumber),
                     ),
                   ),

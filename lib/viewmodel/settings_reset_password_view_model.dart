@@ -1,9 +1,8 @@
-import 'package:acl/utils/routes/routes.dart';
 import 'package:acl/utils/routes/routes_name.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ChangePasswordModel extends ChangeNotifier {
+class ChangePasswordViewModel extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   String? _successMessage;

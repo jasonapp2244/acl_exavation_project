@@ -42,10 +42,10 @@ import 'package:acl/viewmodel/forgot_password_model_view.dart';
 import 'package:acl/viewmodel/login_view_model.dart';
 import 'package:acl/viewmodel/logout_view_model.dart';
 import 'package:acl/viewmodel/searchfield_view_model.dart';
-import 'package:acl/viewmodel/settings_reset_password_view_model.dart';
 import 'package:acl/viewmodel/signup_view_model.dart';
 import 'package:acl/viewmodel/truck_driver_model_view.dart';
 import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
+import 'package:acl/viewmodel/truck_logs_view.dart';
 import 'package:acl/viewmodel/user_profile_model_view.dart';
 import 'package:acl/utils/routes/routes.dart';
 import 'package:acl/utils/routes/routes_name.dart';
@@ -64,19 +64,20 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SignupViewModel()),
-        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => LoginModelViewModel()),
         ChangeNotifierProvider(create: (_) => LogoutViewModel()),
-        ChangeNotifierProvider(create: (_) => ForgotPasswordViewModel()),
-        ChangeNotifierProvider(create: (_) => ChangePasswordModel()),
+        ChangeNotifierProvider(create: (_) => ForgotPasswordModelView()),
         ChangeNotifierProvider(create: (_) => ChangeEmailModelView()),
-        ChangeNotifierProvider(create: (_) => UserProfileController()),
+        ChangeNotifierProvider(create: (_) => ChangeEmailModelView()),
+        ChangeNotifierProvider(create: (_) => UserProfileModelView()),
         ChangeNotifierProvider(
           create: (_) => TruckEntryViewModel(),
           child: AddTruckEnteryView(),
         ),
         ChangeNotifierProvider(create: (_) => SearchViewModel()),
-        ChangeNotifierProvider(create: (_) => TruckLogDetailController()),
+        ChangeNotifierProvider(create: (_) => TruckLogDetailViewModel()),
         ChangeNotifierProvider(create: (_) => TruckEntryViewModel()),
+        ChangeNotifierProvider(create: (_) => TruckLogsViewModel()),
       ],
       child: const MyApp(),
     ),

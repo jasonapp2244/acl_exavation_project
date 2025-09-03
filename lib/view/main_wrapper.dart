@@ -1,5 +1,4 @@
 import 'package:acl/view/homeview.dart';
-import 'package:acl/view/manage_trucks.dart';
 import 'package:acl/view/setting_view.dart';
 import 'package:acl/view/truck_log_view.dart';
 import 'package:acl/view/widgets/custom_bottom_nav_bar.dart';

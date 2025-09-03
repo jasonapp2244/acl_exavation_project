@@ -26,7 +26,7 @@ class _LoginviewState extends State<Loginview> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<LoginViewModel>(context, listen: false).clearError();
+      Provider.of<LoginModelViewModel>(context, listen: false).clearError();
     });
   }
 
@@ -92,7 +92,7 @@ class _LoginviewState extends State<Loginview> {
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
-      child: Consumer<LoginViewModel>(
+      child: Consumer<LoginModelViewModel>(
         builder: (context, loginModel, child) {
           return Form(
             key: _formKey,
@@ -125,7 +125,7 @@ class _LoginviewState extends State<Loginview> {
   }
 
   /// ================= ERROR MESSAGE =================
-  Widget _buildErrorMessage(LoginViewModel loginModel) {
+  Widget _buildErrorMessage(LoginModelViewModel loginModel) {
     if (loginModel.errorMessage == null) return SizedBox.shrink();
 
     return Container(
@@ -158,7 +158,7 @@ class _LoginviewState extends State<Loginview> {
   }
 
   /// ================= FORM FIELDS =================
-  Widget _buildFormFields(LoginViewModel loginModel) {
+  Widget _buildFormFields(LoginModelViewModel loginModel) {
     return Column(
       children: [
         CustomTextField(
@@ -199,7 +199,7 @@ class _LoginviewState extends State<Loginview> {
   }
 
   /// ================= LOGIN BUTTON =================
-  Widget _buildLoginButton(LoginViewModel loginModel) {
+  Widget _buildLoginButton(LoginModelViewModel loginModel) {
     return GestureDetector(
       onTap: loginModel.isLoading
           ? null
@@ -282,7 +282,7 @@ class _LoginviewState extends State<Loginview> {
     final _formKey = GlobalKey<FormState>();
 
     var logoutModel = Provider.of<LogoutViewModel>(context, listen: false);
-    var forgotPasswordModel = Provider.of<ForgotPasswordViewModel>(
+    var forgotPasswordModel = Provider.of<ForgotPasswordModelView>(
       context,
       listen: false,
     );

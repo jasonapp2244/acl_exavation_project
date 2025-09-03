@@ -21,7 +21,7 @@ class _SettingViewState extends State<SettingView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProfileController>(
+      Provider.of<UserProfileModelView>(
         context,
         listen: false,
       ).fetchUserProfile();
@@ -100,7 +100,7 @@ class _SettingViewState extends State<SettingView> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<UserProfileController>(
+        child: Consumer<UserProfileModelView>(
           builder: (context, profileController, child) {
             return Column(
               children: [
@@ -121,7 +121,7 @@ class _SettingViewState extends State<SettingView> {
   }
 
   /// ------------------- Profile Avatar -------------------
-  Widget _buildProfileAvatar(UserProfileController controller) {
+  Widget _buildProfileAvatar(UserProfileModelView controller) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, RoutesName.editProfile),
       child: Container(
@@ -172,7 +172,7 @@ class _SettingViewState extends State<SettingView> {
   }
 
   /// ------------------- Profile Info -------------------
-  Widget _buildProfileInfo(UserProfileController controller) {
+  Widget _buildProfileInfo(UserProfileModelView controller) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),

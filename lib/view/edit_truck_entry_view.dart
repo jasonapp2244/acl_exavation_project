@@ -29,7 +29,7 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
     super.initState();
     // Fetch truck record when widget initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<EditTruckEntryController>().fetchTruckRecordByTruckNumber(
+      context.read<EditTruckEntryModelView>().fetchTruckRecordByTruckNumber(
         widget.truckNumber!,
       );
     });
@@ -63,7 +63,7 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
           ),
         ),
       ),
-      body: Consumer<EditTruckEntryController>(
+      body: Consumer<EditTruckEntryModelView>(
         builder: (context, controller, child) {
           // Update controllers with fetched data
           if (controller.driverName.isNotEmpty &&
@@ -274,7 +274,7 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
   }
 
   // ------------------- License Plate Upload -------------------
-  Widget _buildLicensePlateUpload(EditTruckEntryController provider) {
+  Widget _buildLicensePlateUpload(EditTruckEntryModelView provider) {
     return GestureDetector(
       onTap: () {
         // TODO: Implement photo picker

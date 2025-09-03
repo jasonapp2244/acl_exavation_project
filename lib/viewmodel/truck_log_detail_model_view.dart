@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class TruckLogDetailController extends ChangeNotifier {
+class TruckLogDetailViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -14,7 +14,7 @@ class TruckLogDetailController extends ChangeNotifier {
   bool _isLoading = true;
   String? _error;
   StreamSubscription<QuerySnapshot>? _subscription;
-  DateTime? _selectedDate;
+ 
 
   // Getters
   List<TruckLogDetailModel> get truckLogs => _truckLogs;
@@ -22,60 +22,9 @@ class TruckLogDetailController extends ChangeNotifier {
   String get driverName => _driverName;
   bool get isLoading => _isLoading;
   String? get error => _error;
+   DateTime? _selectedDate;
   DateTime? get selectedDate => _selectedDate;
 
-  // // Load truck logs for a specific truck number
-  // Future<void> loadTruckLogs(String truckNumber) async {
-  //   if (truckNumber.isEmpty) return;
-
-  //   // Cancel any existing subscription
-  //   await _subscription?.cancel();
-
-  //   _isLoading = true;
-  //   _error = null;
-  //   notifyListeners();
-
-  //   try {
-  //     final user = _auth.currentUser;
-  //     if (user == null) {
-  //       _error = "User not authenticated";
-  //       _isLoading = false;
-  //       notifyListeners();
-  //       return;
-  //     }
-
-  //     print('Loading truck logs for truck: $truckNumber');
-  //     print('User ID: ${user.uid}');
-
-  //     // Get the stream for truck entries
-  //     final stream = _firestore
-  //         .collection('users')
-  //         .doc(user.uid)
-  //         .collection('truck_entries')
-  //         .where('truckNumber', isEqualTo: truckNumber.trim())
-  //         .snapshots();
-
-  //     // Listen to the stream and store the subscription
-  //     _subscription = stream.listen(
-  //       (snapshot) {
-  //         print('Received snapshot with ${snapshot.docs.length} documents');
-  //         _processSnapshot(snapshot, truckNumber);
-  //       },
-  //       onError: (error) {
-  //         print('Stream error: $error');
-  //         _error = "Error loading truck logs: $error";
-  //         _isLoading = false;
-  //         notifyListeners();
-  //       },
-  //     );
-  //   } catch (e) {
-  //     print('Exception in loadTruckLogs: $e');
-  //     _error = "Error loading truck logs: $e";
-  //     _isLoading = false;
-  //     notifyListeners();
-  //   }
-  // }
-  // Process the Firestore snapshot
   Future<void> deleteTruckLog(String truckNumber, String logId) async {
     try {
       final user = _auth.currentUser;

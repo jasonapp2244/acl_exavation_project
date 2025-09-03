@@ -23,7 +23,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProfileController>(
+      Provider.of<UserProfileModelView>(
         context,
         listen: false,
       ).fetchUserProfile();
@@ -36,7 +36,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     return Scaffold(
       backgroundColor: AppColor.whiteColor,
       appBar: _buildAppBar(context),
-      body: Consumer<UserProfileController>(
+      body: Consumer<UserProfileModelView>(
         builder: (context, profileController, child) {
           _populateFields(profileController);
 
@@ -88,7 +88,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   /// ------------------- Populate Fields -------------------
-  void _populateFields(UserProfileController controller) {
+  void _populateFields(UserProfileModelView controller) {
     if (controller.name.isNotEmpty && nameController.text.isEmpty) {
       nameController.text = controller.name;
       emailController.text = controller.email;
@@ -98,7 +98,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   /// ------------------- Avatar -------------------
-  Widget _buildProfileAvatar(UserProfileController controller) {
+  Widget _buildProfileAvatar(UserProfileModelView controller) {
     return GestureDetector(
       child: Container(
         width: 110,
@@ -124,7 +124,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   /// ------------------- Error Message -------------------
-  Widget _buildErrorMessage(UserProfileController controller) {
+  Widget _buildErrorMessage(UserProfileModelView controller) {
     if (controller.errorMessage == null) return SizedBox.shrink();
     return Container(
       width: double.infinity,
@@ -146,7 +146,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   /// ------------------- Success Message -------------------
-  Widget _buildSuccessMessage(UserProfileController controller) {
+  Widget _buildSuccessMessage(UserProfileModelView controller) {
     if (controller.successMessage == null) return SizedBox.shrink();
     return Container(
       width: double.infinity,
@@ -168,7 +168,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   /// ------------------- Form Fields -------------------
-  Widget _buildFormFields(UserProfileController controller) {
+  Widget _buildFormFields(UserProfileModelView controller) {
     return Column(
       children: [
         CustomTextField(
@@ -207,7 +207,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   /// ------------------- Save Button -------------------
-  Widget _buildSaveButton(UserProfileController controller) {
+  Widget _buildSaveButton(UserProfileModelView controller) {
     return AuthButton(
       buttonText: 'Save Changes',
       loading: controller.isLoading,

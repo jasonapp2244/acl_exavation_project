@@ -1,3 +1,4 @@
+import 'package:acl/utils/routes/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -102,6 +103,13 @@ class SignupViewModel extends ChangeNotifier {
             email: email.trim(),
             password: password,
           );
+      User? user = userCredential.user;
+
+      if (user != null) {
+        print("Signed in as: ${user.uid}");
+        // Optionally save user locally
+        await Utils().saveUser(user);
+      }
 
       print('User created successfully with UID: ${userCredential.user?.uid}');
 

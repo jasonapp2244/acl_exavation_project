@@ -53,6 +53,31 @@ class TruckDriverRecordModel {
       totalLogs: data['totalLogs'],
     );
   }
+  factory TruckDriverRecordModel.fromMap(
+    Map<String, dynamic> data, {
+    String? id,
+  }) {
+    return TruckDriverRecordModel(
+      id: id ?? '',
+      truckNumber: data['truckNumber'] ?? '',
+      status: data['status'] ?? '',
+      timeIn: data['timeIn'] != null
+          ? (data['timeIn'] as Timestamp).toDate()
+          : null,
+      driverName: data['driverName'] ?? '',
+      driverRole: data['driverRole'] ?? 'Driver',
+      additionalNotes: data['additionalNotes'] ?? '',
+      licensePlatePhotoPath: data['licensePlatePhoto'] ?? '',
+      isActive: data['isActive'] ?? 1,
+      timeOut: data['timeOut'] != null
+          ? (data['timeOut'] as Timestamp).toDate()
+          : null,
+      timestamp: data['timestamp'] != null
+          ? (data['timestamp'] as Timestamp).toDate()
+          : null,
+      totalLogs: data['totalLogs'],
+    );
+  }
 
   // Convert model to Firestore map
   Map<String, dynamic> toMap() {

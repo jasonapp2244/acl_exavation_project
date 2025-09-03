@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ForgotPasswordViewModel extends ChangeNotifier {
+class ForgotPasswordModelView extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 

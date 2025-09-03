@@ -1,10 +1,10 @@
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/responsive.dart';
+import 'package:acl/utils/routes/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dotted_line/dotted_line.dart';
-
 
 class CustomTruckEntryCard extends StatelessWidget {
   final String driverName;
@@ -19,7 +19,7 @@ class CustomTruckEntryCard extends StatelessWidget {
   final VoidCallback? onViewLogs;
   final VoidCallback? onDelete;
 
-  const CustomTruckEntryCard ({
+  const CustomTruckEntryCard({
     super.key,
     required this.driverName,
     required this.role,
@@ -52,7 +52,9 @@ class CustomTruckEntryCard extends StatelessWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: isOnline
                           ? Colors.green.withOpacity(0.2)
@@ -77,8 +79,9 @@ class CustomTruckEntryCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CircleAvatar(
-                    backgroundImage:
-                        AssetImage("assets/images/Ellipse 2@2x.png"),
+                    backgroundImage: AssetImage(
+                      "assets/images/Ellipse 2@2x.png",
+                    ),
                   ),
                   SizedBox(width: Responsive.w(1)),
                   Column(
@@ -174,7 +177,7 @@ class CustomTruckEntryCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        timeIn,
+                        formatTime(timeIn),
                         style: GoogleFonts.rethinkSans(
                           fontWeight: FontWeight.normal,
                           fontSize: Responsive.textScaleFactor * 10,
@@ -219,7 +222,7 @@ class CustomTruckEntryCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        timeOut,
+                        formatTime(timeOut),
                         style: GoogleFonts.rethinkSans(
                           fontWeight: FontWeight.normal,
                           fontSize: Responsive.textScaleFactor * 10,
@@ -245,7 +248,9 @@ class CustomTruckEntryCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(22),
                         ),
                         padding: const EdgeInsets.symmetric(
-                            vertical: 5.0, horizontal: 10.0),
+                          vertical: 5.0,
+                          horizontal: 10.0,
+                        ),
                         child: Text(
                           "Edit",
                           textAlign: TextAlign.center,
@@ -287,9 +292,7 @@ class CustomTruckEntryCard extends StatelessWidget {
                         color: AppColor.redColor.withOpacity(0.24),
                       ),
                       padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(
-                        "assets/icons/delete-03.svg",
-                      ),
+                      child: SvgPicture.asset("assets/icons/delete-03.svg"),
                     ),
                   ),
                 ],

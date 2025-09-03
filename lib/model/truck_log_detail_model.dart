@@ -11,10 +11,10 @@ class TruckLogDetailModel {
   final DateTime? timestamp;
 
   TruckLogDetailModel({
-   this.id,
+    this.id,
     this.truckNumber,
     this.driverName,
-  this.driverRole,
+    this.driverRole,
     this.status,
     this.timeIn,
     this.timeOut,

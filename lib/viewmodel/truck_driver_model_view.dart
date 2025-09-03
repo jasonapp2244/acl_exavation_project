@@ -1,9 +1,7 @@
 import 'package:acl/model/truck_driver_record_model.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class TruckEntryViewModel extends ChangeNotifier {
   String driverName = '';
@@ -295,41 +293,6 @@ class TruckEntryViewModel extends ChangeNotifier {
     });
   }
 
-  // Future<void> recordTimeIn(String docId) async {
-  //   try {
-  //     await FirebaseFirestore.instance
-  //         .collection('users')
-  //         .doc(FirebaseAuth.instance.currentUser!.uid)
-  //         .collection('truck_entries')
-  //         .doc(docId)
-  //         .update({
-  //           'timeIn': DateTime.now(),
-  //           'status': 'On Site',
-  //           'isActive': 1,
-  //         });
-  //   } catch (e) {
-  //     debugPrint("Error recording Time In: $e");
-  //     rethrow;
-  //   }
-  // }
-
-  // Future<void> recordTimeOut(String docId) async {
-  //   try {
-  //     await FirebaseFirestore.instance
-  //         .collection('users')
-  //         .doc(FirebaseAuth.instance.currentUser!.uid)
-  //         .collection('truck_entries')
-  //         .doc(docId)
-  //         .update({
-  //           'timeOut': DateTime.now(),
-  //           'status': 'Departed',
-  //           'isActive': 1,
-  //         });
-  //   } catch (e) {
-  //     debugPrint("Error recording Time Out: $e");
-  //     rethrow;
-  //   }
-  // }
   Future<void> recordTimeIn(String docId) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final now = DateTime.now();

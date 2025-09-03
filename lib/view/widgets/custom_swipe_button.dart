@@ -1,4 +1,3 @@
-import 'package:acl/model/truck_driver_record_model.dart';
 import 'package:acl/viewmodel/truck_driver_model_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -5,7 +5,6 @@ import 'package:acl/view/add_truck_entery_view.dart';
 import 'package:acl/view/change_email_view.dart';
 import 'package:acl/view/change_password_view.dart';
 import 'package:acl/view/edit_profile_view.dart';
-import 'package:acl/view/edit_truck_entry_view.dart';
 import 'package:acl/view/homeview.dart';
 import 'package:acl/view/loginview.dart';
 import 'package:acl/view/main_wrapper.dart';
@@ -40,7 +39,7 @@ class Routes {
       case RoutesName.truckLogDetail:
         return MaterialPageRoute(
           builder: (_) => ChangeNotifierProvider(
-            create: (context) => TruckLogDetailController(),
+            create: (context) => TruckLogDetailViewModel(),
             child: TruckLogDetailView(),
           ),
         );
@@ -62,7 +61,7 @@ class Routes {
       case RoutesName.eidtTruckEntry:
         return MaterialPageRoute(
           builder: (_) => ChangeNotifierProvider(
-            create: (context) => EditTruckEntryController(),
+            create: (context) => EditTruckEntryModelView(),
             child: EditProfileView(),
           ),
         );
