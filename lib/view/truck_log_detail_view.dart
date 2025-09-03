@@ -377,7 +377,12 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                           ],
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            controller.deleteTruckLog(
+                              widget.truckNumber.toString(),
+                              record.id.toString(),
+                            );
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
