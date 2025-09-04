@@ -1,4 +1,5 @@
 import 'package:acl/view/truck_log_detail_view.dart';
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/viewmodel/searchfield_view_model.dart';
 import 'package:acl/model/truck_driver_record_model.dart';
 import 'package:acl/res/components/app_color.dart';
@@ -87,8 +88,8 @@ class _SearchFieldViewState extends State<SearchFieldView> {
       ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColor.whiteColor),
+          return Center(
+            child:  CustomLoading(),
           );
         }
 

@@ -1,3 +1,4 @@
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/view/widgets/custom_textfield.dart';
 import 'package:acl/viewmodel/user_profile_model_view.dart';
 import 'package:acl/res/components/app_color.dart';
@@ -120,7 +121,7 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   /// ------------------- Loading Indicator -------------------
   Widget _buildLoadingIndicator() {
-    return Center(child: CircularProgressIndicator(color: AppColor.whiteColor));
+    return Center(child: CustomLoading());
   }
 
   /// ------------------- Error Message -------------------

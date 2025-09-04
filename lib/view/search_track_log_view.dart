@@ -1,6 +1,7 @@
 import 'package:acl/res/components/responsive.dart';
 import 'package:acl/view/edit_truck_entry_view.dart';
 import 'package:acl/view/truck_log_detail_view.dart';
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/view/widgets/custom_truck_log_card.dart';
 import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
 import 'package:acl/model/truck_driver_record_model.dart';
@@ -87,9 +88,7 @@ class _SearchTrackFieldViewState extends State<SearchTrackFieldView> {
       stream: searchProvider.searchByTruckNumber(text),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColor.primaryColor),
-          );
+          return Center(child: CustomLoading());
         }
 
         if (snapshot.hasError) {

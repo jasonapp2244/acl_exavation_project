@@ -1,5 +1,6 @@
 import 'package:acl/utils/routes/utils.dart';
 import 'package:acl/view/widgets/custom_filter_dropdown.dart';
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/viewmodel/truck_driver_model_view.dart';
 import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
 import 'package:acl/viewmodel/user_profile_model_view.dart';
@@ -350,7 +351,7 @@ class _HomeviewState extends State<Homeview> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-            child: CircularProgressIndicator(color: AppColor.whiteColor),
+            child: CustomLoading(),
           );
         }
         if (snapshot.hasError) {
