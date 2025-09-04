@@ -1,19 +1,21 @@
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/responsive.dart';
 import 'package:acl/utils/routes/utils.dart';
+import 'package:acl/view/widgets/custom_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dotted_line/dotted_line.dart';
 
 class CustomTruckEntryCard extends StatelessWidget {
+  final String id;
   final String driverName;
   final String role;
   final String truckNumber;
   final int totalLogs;
   final String timeIn;
   final String timeOut;
-  final bool isOnline;
+  final String? status;
 
   final VoidCallback? onEdit;
   final VoidCallback? onViewLogs;
@@ -21,13 +23,14 @@ class CustomTruckEntryCard extends StatelessWidget {
 
   const CustomTruckEntryCard({
     super.key,
+    required this.id,
     required this.driverName,
     required this.role,
     required this.truckNumber,
     required this.totalLogs,
     required this.timeIn,
     required this.timeOut,
-    this.isOnline = false,
+    this.status,
     this.onEdit,
     this.onViewLogs,
     this.onDelete,
@@ -43,32 +46,19 @@ class CustomTruckEntryCard extends StatelessWidget {
           color: AppColor.filledColor,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
+          padding: EdgeInsets.symmetric(
+            horizontal: Responsive.w(1),
+            vertical: 20,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 🔵 Status
               Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isOnline
-                          ? Colors.green.withOpacity(0.2)
-                          : Colors.red.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      isOnline ? "On Site" : "Offline",
-                      style: GoogleFonts.rethinkSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: Responsive.textScaleFactor * 10,
-                        color: isOnline ? Colors.green : Colors.red,
-                      ),
-                    ),
+                  CustomStatusTile(
+                    title: status ?? 'On Site',
+                    isOnline: status == 'On Site' ? true : false,
                   ),
                 ],
               ),
@@ -103,11 +93,11 @@ class CustomTruckEntryCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(width: Responsive.w(3)),
+                  SizedBox(width: Responsive.w(2)),
                   Row(
                     children: [
                       SvgPicture.asset("assets/icons/truck.svg"),
-                      SizedBox(width: 6),
+                      SizedBox(width: Responsive.w(2)),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -127,13 +117,13 @@ class CustomTruckEntryCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(width: 12),
+                      SizedBox(width: Responsive.w(4)),
                       Container(
                         height: 20,
                         width: 1,
                         color: AppColor.filletextdColor,
                       ),
-                      SizedBox(width: 12),
+                      SizedBox(width: Responsive.w(2)),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -173,19 +163,19 @@ class CustomTruckEntryCard extends StatelessWidget {
                         "Time-In",
                         style: GoogleFonts.rethinkSans(
                           fontWeight: FontWeight.bold,
-                          fontSize: Responsive.textScaleFactor * 12,
+                          fontSize: Responsive.textScaleFactor * 10,
                         ),
                       ),
                       Text(
                         formatTime(timeIn),
                         style: GoogleFonts.rethinkSans(
                           fontWeight: FontWeight.normal,
-                          fontSize: Responsive.textScaleFactor * 10,
+                          fontSize: Responsive.textScaleFactor * 8,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(width: 5),
+                  SizedBox(width: Responsive.w(1)),
                   Container(
                     width: 10,
                     height: 10,
@@ -210,7 +200,7 @@ class CustomTruckEntryCard extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                   ),
-                  SizedBox(width: 5),
+                  SizedBox(width: Responsive.w(1)),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -218,14 +208,14 @@ class CustomTruckEntryCard extends StatelessWidget {
                         "Time-Out",
                         style: GoogleFonts.rethinkSans(
                           fontWeight: FontWeight.bold,
-                          fontSize: Responsive.textScaleFactor * 12,
+                          fontSize: Responsive.textScaleFactor * 10,
                         ),
                       ),
                       Text(
                         formatTime(timeOut),
                         style: GoogleFonts.rethinkSans(
                           fontWeight: FontWeight.normal,
-                          fontSize: Responsive.textScaleFactor * 10,
+                          fontSize: Responsive.textScaleFactor * 8,
                         ),
                       ),
                     ],

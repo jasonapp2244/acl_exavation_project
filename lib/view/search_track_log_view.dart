@@ -1,21 +1,23 @@
+import 'package:acl/res/components/responsive.dart';
+import 'package:acl/view/edit_truck_entry_view.dart';
 import 'package:acl/view/truck_log_detail_view.dart';
-import 'package:acl/viewmodel/searchfield_view_model.dart';
+import 'package:acl/view/widgets/custom_truck_log_card.dart';
+import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
 import 'package:acl/model/truck_driver_record_model.dart';
 import 'package:acl/res/components/app_color.dart';
-import 'package:acl/view/widgets/custom_driver_widget.dart';
 import 'package:acl/viewmodel/truck_logs_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class SearchFieldView extends StatefulWidget {
-  const SearchFieldView({Key? key}) : super(key: key);
+class SearchTrackFieldView extends StatefulWidget {
+  const SearchTrackFieldView({Key? key}) : super(key: key);
 
   @override
-  State<SearchFieldView> createState() => _SearchFieldViewState();
+  State<SearchTrackFieldView> createState() => _SearchTrackFieldViewState();
 }
 
-class _SearchFieldViewState extends State<SearchFieldView> {
+class _SearchTrackFieldViewState extends State<SearchTrackFieldView> {
   final TextEditingController searchByNumberController =
       TextEditingController();
 
@@ -27,12 +29,12 @@ class _SearchFieldViewState extends State<SearchFieldView> {
 
   @override
   Widget build(BuildContext context) {
-    final searchProvider = Provider.of<SearchViewModel>(context, listen: false);
+    final controller = Provider.of<TruckLogsViewModel>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
-      body: _buildBody(searchProvider),
+      body: _buildBody(controller),
     );
   }
 
@@ -69,7 +71,7 @@ class _SearchFieldViewState extends State<SearchFieldView> {
   }
 
   // ------------------ BODY ------------------
-  Widget _buildBody(SearchViewModel searchProvider) {
+  Widget _buildBody(TruckLogsViewModel searchProvider) {
     final searchText = searchByNumberController.text.trim();
 
     if (searchText.isEmpty) {
@@ -80,13 +82,13 @@ class _SearchFieldViewState extends State<SearchFieldView> {
   }
 
   // ------------------ SEARCH RESULTS ------------------
-  Widget _buildSearchResults(searchProvider, String text) {
+  Widget _buildSearchResults(TruckLogsViewModel searchProvider, String text) {
     return StreamBuilder<List<TruckDriverRecordModel>>(
-      stream: searchProvider.truckEntriesStream(searchText: text),
+      stream: searchProvider.searchByTruckNumber(text),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-            child: CircularProgressIndicator(color: AppColor.whiteColor),
+            child: CircularProgressIndicator(color: AppColor.primaryColor),
           );
         }
 
@@ -109,28 +111,51 @@ class _SearchFieldViewState extends State<SearchFieldView> {
     return ListView.builder(
       itemCount: entries.length,
       itemBuilder: (context, index) {
-        final truck = entries[index];
+        final log = entries[index];
+        final controller = Provider.of<TruckLogsViewModel>(
+          context,
+          listen: false,
+        );
+
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
-          child: CustomTruckEntryCardWidget(
-            truckNumber: truck.truckNumber,
-            status: truck.status,
-            timeIn: truck.timeIn ?? DateTime.now(),
-            driverName: truck.driverName,
-            driverRole: truck.driverRole,
-            onTimeOutPressed: () {},
-            onViewLogsPressed: () {
+          padding: EdgeInsets.symmetric(
+            horizontal: Responsive.w(3),
+            vertical: 8.0,
+          ),
+          child: CustomTruckEntryCard(
+            status: log.status,
+            id: log.id,
+            driverName: log.driverName,
+            role: 'Driver',
+            truckNumber: log.truckNumber,
+            totalLogs: log.totalLogs ?? 0,
+            timeIn: log.timeIn?.toString() ?? "-",
+            timeOut: log.timeOut?.toString() ?? "-",
+            onDelete: () async {
+              await controller.deleteTruckEntry(log.truckNumber);
+            },
+            onEdit: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChangeNotifierProvider(
+                    create: (context) => EditTruckEntryModelView(),
+                    child: EditTruckEntryView(truckNumber: log.truckNumber),
+                  ),
+                ),
+              );
+            },
+            onViewLogs: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChangeNotifierProvider(
                     create: (context) => TruckLogsViewModel(),
-                    child: TruckLogDetailView(truckNumber: truck.truckNumber),
+                    child: TruckLogDetailView(truckNumber: log.truckNumber),
                   ),
                 ),
               );
             },
-            isActive: truck.isActive,
           ),
         );
       },

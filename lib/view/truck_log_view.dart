@@ -67,6 +67,12 @@ class TruckLogView extends StatelessWidget {
                           child: SizedBox(
                             height: 45,
                             child: TextFormField(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  RoutesName.searchTruck,
+                                );
+                              },
                               decoration: InputDecoration(
                                 prefixIcon: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -302,14 +308,18 @@ class TruckLogView extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 final log = logs[index];
                                 return CustomTruckEntryCard(
+                                  status: log.status,
+                                  id: log.id,
                                   driverName: log.driverName,
                                   role: 'Driver',
                                   truckNumber: log.truckNumber,
-                                  totalLogs: logs.length,
+                                  totalLogs: log.totalLogs ?? 0,
                                   timeIn: log.timeIn.toString(),
                                   timeOut: log.timeOut.toString(),
-                                  onDelete: () {
-                                    // Handle delete
+                                  onDelete: () async {
+                                    await controller.deleteTruckEntry(
+                                      log.truckNumber,
+                                    );
                                   },
                                   onEdit: () {
                                     Navigator.push(

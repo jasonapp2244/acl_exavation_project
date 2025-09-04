@@ -21,6 +21,56 @@ class TruckLogsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Stream<List<TruckDriverRecordModel>> latestLogsForDateStream({
+  //   DateTime? date,
+  // }) {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   if (user == null) throw Exception("User not logged in");
+
+  //   date ??= DateTime.now();
+
+  //   final startOfDay = DateTime(date.year, date.month, date.day);
+  //   final endOfDay = startOfDay.add(const Duration(days: 1));
+
+  //   final truckEntriesRef = FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(user.uid)
+  //       .collection('truck_entries');
+
+  //   return truckEntriesRef.snapshots().asyncMap((truckEntriesSnapshot) async {
+  //     final List<TruckDriverRecordModel> latestLogs = [];
+
+  //     for (var truckDoc in truckEntriesSnapshot.docs) {
+  //       final logsSnapshot = await truckDoc.reference
+  //           .collection('logs')
+  //           .where('timeIn', isGreaterThanOrEqualTo: startOfDay)
+  //           .where('timeIn', isLessThan: endOfDay)
+  //           .orderBy('timeIn', descending: true)
+  //           .limit(1)
+  //           .get();
+
+  //       if (logsSnapshot.docs.isNotEmpty) {
+  //         final logData = logsSnapshot.docs.first.data();
+  //         final truckData = truckDoc.data();
+
+  //         // Merge parent (truck) + log data
+  //         final mergedData = {
+  //           'driverName': truckData['driverName'],
+  //           'truckNumber': truckData['truckNumber'],
+  //           ...logData,
+  //         };
+
+  //         latestLogs.add(
+  //           TruckDriverRecordModel.fromMap(
+  //             mergedData,
+  //           ), // Use fromMap constructor
+  //         );
+  //       }
+  //     }
+
+  //     return latestLogs;
+  //   });
+  // }
   Stream<List<TruckDriverRecordModel>> latestLogsForDateStream({
     DateTime? date,
   }) {
@@ -41,39 +91,98 @@ class TruckLogsViewModel extends ChangeNotifier {
       final List<TruckDriverRecordModel> latestLogs = [];
 
       for (var truckDoc in truckEntriesSnapshot.docs) {
+        // Get logs for the day
         final logsSnapshot = await truckDoc.reference
             .collection('logs')
             .where('timeIn', isGreaterThanOrEqualTo: startOfDay)
             .where('timeIn', isLessThan: endOfDay)
             .orderBy('timeIn', descending: true)
-            .limit(1)
             .get();
 
         if (logsSnapshot.docs.isNotEmpty) {
-          final logData = logsSnapshot.docs.first.data();
+          final latestLog = logsSnapshot.docs.first.data();
           final truckData = truckDoc.data();
 
-          // Merge parent (truck) + log data
+          // Merge parent truck info + latest log
           final mergedData = {
             'driverName': truckData['driverName'],
             'truckNumber': truckData['truckNumber'],
-            ...logData,
+            ...latestLog,
+            'totalLogs':
+                logsSnapshot.size, // ✅ total logs for that truck (today)
           };
 
-          latestLogs.add(
-            TruckDriverRecordModel.fromMap(
-              mergedData,
-            ), // Use fromMap constructor
-          );
+          latestLogs.add(TruckDriverRecordModel.fromMap(mergedData));
         }
       }
 
       return latestLogs;
     });
   }
+Stream<List<TruckDriverRecordModel>> searchByTruckNumber(String truckNumber) {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) throw Exception("User not logged in");
 
+  return FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .collection('truck_entries')
+      .where('truckNumber', isEqualTo: truckNumber)
+      .snapshots()
+      .asyncMap((snapshot) async {
+        final List<TruckDriverRecordModel> logs = [];
+        for (var truckDoc in snapshot.docs) {
+          final logsSnapshot = await truckDoc.reference
+              .collection('logs')
+              .orderBy('timeIn', descending: true)
+              .get();
 
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+          if (logsSnapshot.docs.isNotEmpty) {
+            final latestLog = logsSnapshot.docs.first.data();
+            final truckData = truckDoc.data();
+
+            final mergedData = {
+              'driverName': truckData['driverName'],
+              'truckNumber': truckData['truckNumber'],
+              ...latestLog,
+              'totalLogs': logsSnapshot.size,
+            };
+
+            logs.add(TruckDriverRecordModel.fromMap(mergedData));
+          }
+        }
+        return logs;
+      });
+}
+
+  Future<void> deleteTruckEntry(String truckNo) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final truckEntriesRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('truck_entries');
+
+    // Find the truck entry matching truckNo
+    final querySnapshot = await truckEntriesRef
+        .where('truckNumber', isEqualTo: truckNo)
+        .get();
+
+    for (var truckDoc in querySnapshot.docs) {
+      // Delete all logs inside this truck entry
+      final logsSnapshot = await truckDoc.reference.collection('logs').get();
+      for (var logDoc in logsSnapshot.docs) {
+        await logDoc.reference.delete();
+      }
+
+      // Delete the truck entry document itself
+      await truckDoc.reference.delete();
+    }
+    notifyListeners();
+  }
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   List<TruckLogDetailModel> _truckLogs = [];
@@ -82,15 +191,9 @@ class TruckLogsViewModel extends ChangeNotifier {
   bool _isLoading = true;
   String? _error;
 
- 
-
-
   String get driverName => _driverName;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  
- 
-
 
   // Clear all data
   void clearData() {
@@ -102,7 +205,6 @@ class TruckLogsViewModel extends ChangeNotifier {
     _selectedDate = null;
     notifyListeners();
   }
-
 
   // Apply date filter to the truck logs
   void _applyDateFilter() {
@@ -128,7 +230,4 @@ class TruckLogsViewModel extends ChangeNotifier {
       }).toList();
     }
   }
-
-
- 
 }

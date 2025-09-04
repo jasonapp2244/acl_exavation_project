@@ -1,3 +1,4 @@
+import 'package:acl/view/search_track_log_view.dart';
 import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
 import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
 import 'package:acl/utils/routes/routes_name.dart';
@@ -69,6 +70,9 @@ class Routes {
         return MaterialPageRoute(builder: (_) => TimeFormatView());
       case RoutesName.search:
         return MaterialPageRoute(builder: (_) => SearchFieldView());
+
+      case RoutesName.searchTruck:
+        return MaterialPageRoute(builder: (_) => SearchTrackFieldView());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

@@ -21,4 +21,5 @@ class RoutesName {
   static const String settings = '/settings-view';
   static const String main = '/main-view';
   static const String search = '/search-view';
+  static const String searchTruck = '/search-truck';
 }

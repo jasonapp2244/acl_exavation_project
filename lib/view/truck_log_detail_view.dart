@@ -4,6 +4,7 @@ import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/responsive.dart';
 import 'package:acl/view/edit_truck_entry_view.dart';
+import 'package:acl/viewmodel/truck_logs_view.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -305,7 +306,6 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
               ),
             ),
             SizedBox(height: 16),
-          
           ],
         ),
       );
@@ -351,7 +351,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                                     fontSize: Responsive.textScaleFactor * 12,
                                   ),
                                 ),
-                              
+
                                 Text(
                                   record.status ?? '',
                                   style: GoogleFonts.rethinkSans(
@@ -365,7 +365,12 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            showDeleteTruckDialog( context);
+                            await showDeleteTruckDialog(
+                              context,
+                              controller,
+                              record.id!,
+                              widget.truckNumber!,
+                            );
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -470,28 +475,34 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
     );
   }
 
- Future<void> showDeleteTruckDialog(BuildContext context) async {
-  final result = await showDialog<bool>(
-    context: context,
-    barrierDismissible: false, // user must tap a button
-    builder: (context) {
-      return CustomDeleteTruckDialog(
-        onConfirm: () {
-          Navigator.of(context).pop(true); // return "Yes"
-        },
-        onCancel: () {
-          Navigator.of(context).pop(false); // return "No"
-        },
-      );
-    },
-  );
+  Future<void> showDeleteTruckDialog(
+    BuildContext context,
+    TruckLogDetailViewModel model,
+    String logId,
+    String truckNumber,
+  ) async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap a button
+      builder: (context) {
+        return CustomDeleteTruckDialog(
+          onConfirm: () async {
+            Navigator.of(context).pop(true); // ✅ return "Yes"
+          },
+          onCancel: () {
+            Navigator.of(context).pop(false); // ❌ return "No"
+          },
+        );
+      },
+    );
 
-  if (result == true) {
-    print("User confirmed delete");
-    // call deleteTruckRecord() here
-  } else {
-    print("User canceled delete");
+    if (result == true) {
+      // ✅ User clicked "Yes"
+      print("User confirmed delete");
+      await model.deleteTruckLog(truckNumber, logId);
+    } else {
+      // ❌ User clicked "No"
+      print("User canceled delete");
+    }
   }
-}
-
 }

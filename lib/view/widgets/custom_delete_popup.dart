@@ -77,7 +77,7 @@ class CustomDeleteTruckDialog extends StatelessWidget {
                   child: AuthButton(
                     buttonText: 'Yes',
                     loading: false,
-                    onPress: () {},
+                    onPress: onConfirm,
                   ),
                 ),
 
@@ -88,9 +88,7 @@ class CustomDeleteTruckDialog extends StatelessWidget {
                   child: AuthButton(
                     buttonText: 'No',
                     loading: false,
-                    onPress: () {
-                      Navigator.pop(context);
-                    },
+                    onPress: onCancel,
                   ),
                 ),
               ],

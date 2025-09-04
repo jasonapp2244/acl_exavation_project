@@ -72,16 +72,6 @@ class _SettingViewState extends State<SettingView> {
                 fontSize: Responsive.textScaleFactor * 26,
               ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColor.whiteColor.withOpacity(0.2),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: SvgPicture.asset("assets/icons/notificsation.svg"),
-              ),
-            ),
           ],
         ),
       ),
