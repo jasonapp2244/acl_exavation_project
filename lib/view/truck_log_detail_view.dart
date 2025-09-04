@@ -1,4 +1,5 @@
 import 'package:acl/view/widgets/custom_delete_popup.dart';
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
 import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
 import 'package:acl/res/components/app_color.dart';
@@ -255,7 +256,7 @@ class _TruckLogDetailViewState extends State<TruckLogDetailView> {
 
   Widget _buildContent(TruckLogDetailViewModel controller) {
     if (controller.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CustomLoading());
     }
 
     if (controller.error != null) {

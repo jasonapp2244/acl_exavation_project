@@ -4,6 +4,8 @@ import 'package:acl/res/components/responsive.dart';
 import 'package:acl/utils/routes/routes_name.dart';
 import 'package:acl/view/edit_truck_entry_view.dart';
 import 'package:acl/view/truck_log_detail_view.dart';
+import 'package:acl/view/widgets/custom_delete_popup.dart';
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/view/widgets/custom_truck_log_card.dart';
 import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
 import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
@@ -285,16 +287,12 @@ class TruckLogView extends StatelessWidget {
 
                       Expanded(
                         child: StreamBuilder<List<TruckDriverRecordModel>>(
-                          stream: controller.latestLogsForDateStream(
-                            date: controller.selectedDate ?? DateTime.now(),
-                          ),
-
+                          stream: controller
+                              .latestLogsForDateStream(), // no need to pass date
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
+                              return const Center(child: CustomLoading());
                             }
 
                             if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -308,7 +306,7 @@ class TruckLogView extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 final log = logs[index];
                                 return CustomTruckEntryCard(
-                                  status: log.status,
+                                  status: log.status ?? 'none',
                                   id: log.id,
                                   driverName: log.driverName,
                                   role: 'Driver',
@@ -317,7 +315,10 @@ class TruckLogView extends StatelessWidget {
                                   timeIn: log.timeIn.toString(),
                                   timeOut: log.timeOut.toString(),
                                   onDelete: () async {
-                                    await controller.deleteTruckEntry(
+                                    await showDeleteTruckDialog(
+                                      context,
+                                      controller,
+                                      log.id,
                                       log.truckNumber,
                                     );
                                   },
@@ -366,5 +367,36 @@ class TruckLogView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> showDeleteTruckDialog(
+    BuildContext context,
+    TruckLogsViewModel model,
+    String logId,
+    String truckNumber,
+  ) async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap a button
+      builder: (context) {
+        return CustomDeleteTruckDialog(
+          onConfirm: () async {
+            Navigator.of(context).pop(true); // ✅ return "Yes"
+          },
+          onCancel: () {
+            Navigator.of(context).pop(false); // ❌ return "No"
+          },
+        );
+      },
+    );
+
+    if (result == true) {
+      // ✅ User clicked "Yes"
+      print("User confirmed delete");
+      await model.deleteTruckEntry(truckNumber);
+    } else {
+      // ❌ User clicked "No"
+      print("User canceled delete");
+    }
   }
 }

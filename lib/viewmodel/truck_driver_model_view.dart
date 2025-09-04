@@ -96,51 +96,6 @@ class TruckEntryViewModel extends ChangeNotifier {
     }
   }
 
-  // Stream<List<TruckDriverRecordModel>> truckEntriesStream(String selectStatus) {
-  //   final user = FirebaseAuth.instance.currentUser;
-  //   if (user == null) throw Exception("User not logged in");
-
-  //   return FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(user.uid)
-  //       .collection('truck_entries')
-  //       .where('status', isEqualTo: selectStatus) // corrected
-  //       .where('isActive', isEqualTo: 1)
-  //       .orderBy('timestamp', descending: true)
-  //       .snapshots()
-  //       .map((snapshot) {
-  //         // Group records by truck number and get only the most recent record for each
-  //         Map<String, TruckDriverRecordModel> uniqueTrucks = {};
-
-  //         for (var doc in snapshot.docs) {
-  //           final record = TruckDriverRecordModel.fromFirestore(doc);
-
-  //           // If this truck number hasn't been seen yet, add it
-  //           if (!uniqueTrucks.containsKey(record.truckNumber)) {
-  //             uniqueTrucks[record.truckNumber] = record;
-  //           } else {
-  //             // If we already have a record for this truck, compare timestamps
-  //             final existingRecord = uniqueTrucks[record.truckNumber]!;
-
-  //             // If current record has a more recent timestamp, replace it-
-  //             if (record.timestamp != null &&
-  //                 existingRecord.timestamp != null) {
-  //               if (record.timestamp!.isAfter(existingRecord.timestamp!)) {
-  //                 uniqueTrucks[record.truckNumber] = record;
-  //               }
-  //             } else if (record.timestamp != null &&
-  //                 existingRecord.timestamp == null) {
-  //               // If existing record has no timestamp but current does, use current
-  //               uniqueTrucks[record.truckNumber] = record;
-  //             }
-  //           }
-  //         }
-
-  //         // Return only the unique truck records (most recent for each truck number)
-  //         return uniqueTrucks.values.toList();
-  //       });
-  // }
-
   Stream<List<TruckDriverRecordModel>> truckEntriesStream(String selectStatus) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception("User not logged in");
@@ -352,6 +307,7 @@ class TruckEntryViewModel extends ChangeNotifier {
           'timeOut': now,
           'event': 'Completed', // or keep it as "Time In + Time Out"
           'timestamp': now,
+          'status': 'departed',
         });
       } else {
         // 🚨 Fallback: no open log found → create a standalone Time Out log

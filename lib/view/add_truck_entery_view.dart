@@ -9,7 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class AddTruckEnteryView extends StatelessWidget {
-  const AddTruckEnteryView({super.key});
+  AddTruckEnteryView({super.key});
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,20 +28,21 @@ class AddTruckEnteryView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // _buildHeaderImage(),
-                      //  SizedBox(height: Responsive.h(1)),
-                      _buildDriverNameField(truckProvider),
-                      SizedBox(height: Responsive.h(1)),
-                      _buildAdditionalNotesField(truckProvider),
-                      SizedBox(height: Responsive.h(1)),
-                      _buildTruckNumberField(truckProvider),
-                      SizedBox(height: Responsive.h(1)),
-                      //    _buildLicensePlateUpload(truckProvider),
-                      SizedBox(height: Responsive.h(2)),
-                      _buildActionButtons(truckProvider, context),
-                    ],
+                  child: Form(
+                    key: _formKey,
+                    autovalidateMode: AutovalidateMode
+                        .onUserInteraction, // 👈 real-time validation
+                    child: Column(
+                      children: [
+                        _buildDriverNameField(truckProvider),
+                        SizedBox(height: Responsive.h(1)),
+                        _buildAdditionalNotesField(truckProvider),
+                        SizedBox(height: Responsive.h(1)),
+                        _buildTruckNumberField(truckProvider),
+                        SizedBox(height: Responsive.h(2)),
+                        _buildActionButtons(truckProvider, context),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -62,17 +65,18 @@ class AddTruckEnteryView extends StatelessWidget {
     );
   }
 
-  /// ------------------- Header Image -------------------
-  Widget _buildHeaderImage() {
-    return SvgPicture.asset("assets/images/Group 1171275573.svg");
-  }
-
   /// ------------------- Driver Name Field -------------------
   Widget _buildDriverNameField(TruckEntryViewModel provider) {
     return TextFormField(
       controller: provider.driverNameController,
       onChanged: provider.setDriverName,
       decoration: _buildInputDecoration("Driver Name"),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return "Driver name is required";
+        }
+        return null; // ✅ must return null when valid
+      },
     );
   }
 
@@ -92,34 +96,12 @@ class AddTruckEnteryView extends StatelessWidget {
       controller: provider.truckNumberController,
       onChanged: provider.setTruckNumber,
       decoration: _buildInputDecoration("Truck Number"),
-    );
-  }
-
-  /// ------------------- License Plate Upload -------------------
-  Widget _buildLicensePlateUpload(TruckEntryViewModel provider) {
-    return GestureDetector(
-      onTap: () {
-        // TODO: Implement photo picker
-        // provider.setLicensePlatePhoto(selectedPath);
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return "Truck Number is required";
+        }
+        return null;
       },
-      child: Container(
-        width: double.infinity,
-        height: Responsive.h(15),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22),
-          color: AppColor.filledColor,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset("assets/icons/camera-add-01.svg"),
-            Text(
-              "Upload License Plate Photo",
-              style: GoogleFonts.rethinkSans(color: AppColor.filletextdColor),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -143,10 +125,13 @@ class AddTruckEnteryView extends StatelessWidget {
           ? null
           : () async {
               try {
-                await provider.saveTruckEntry(context, recordTimeIn: false);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Truck entry saved!")),
-                );
+                if (_formKey.currentState!.validate()) {
+                  // ✅ trigger validation
+                  await provider.saveTruckEntry(context, recordTimeIn: false);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Truck entry saved!")),
+                  );
+                }
               } catch (e) {
                 ScaffoldMessenger.of(
                   context,
@@ -181,14 +166,17 @@ class AddTruckEnteryView extends StatelessWidget {
           ? null
           : () async {
               try {
-                await provider.saveTruckEntry(context, recordTimeIn: true);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      "Truck entry saved & timed-in at ${provider.timeIn}",
+                if (_formKey.currentState!.validate()) {
+                  // ✅ trigger validation here too
+                  await provider.saveTruckEntry(context, recordTimeIn: true);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Truck entry saved & timed-in at ${provider.timeIn}",
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               } catch (e) {
                 ScaffoldMessenger.of(
                   context,

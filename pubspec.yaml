@@ -52,12 +52,17 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   loading_animation_widget:
   animated_splash_screen: ^1.3.0
+  ripple_wave: ^0.1.5
+  async: ^2.12.0
+
+
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1  # or latest
+  rxdart: ^0.28.0
 flutter_icons:
   android: true
   ios: true

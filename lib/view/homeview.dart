@@ -286,7 +286,7 @@ class _HomeviewState extends State<Homeview> {
       onPress: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const AddTruckEnteryView()),
+          MaterialPageRoute(builder: (context) => AddTruckEnteryView()),
         );
       },
       prefixIcon: SvgPicture.asset("assets/icons/plus.svg"),

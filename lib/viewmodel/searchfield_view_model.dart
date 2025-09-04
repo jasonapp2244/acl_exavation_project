@@ -41,17 +41,14 @@ Stream<List<TruckDriverRecordModel>> truckEntriesStream({
       .collection('truck_entries')
       .where('isActive', isEqualTo: 1);
 
-  if (searchText.isNotEmpty) {
-    query = query.where('truckNumber', isEqualTo: searchText.trim());
-  }
-  if (searchText.isNotEmpty) {
+  // 🔎 If search is not empty, filter progressively
+  if (searchText.trim().isNotEmpty) {
+    final text = searchText.trim();
     query = query
-        .where('truckNumber', isGreaterThanOrEqualTo: searchText.trim())
-        .where(
-          'truckNumber',
-          isLessThanOrEqualTo: '${searchText.trim()}\uf8ff',
-        );
+        .where('truckNumber', isGreaterThanOrEqualTo: text)
+        .where('truckNumber', isLessThanOrEqualTo: '$text\uf8ff');
   }
+
   return query.snapshots().map((snapshot) {
     return snapshot.docs
         .map((doc) => TruckDriverRecordModel.fromFirestore(doc))

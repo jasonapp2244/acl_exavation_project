@@ -14,33 +14,51 @@ class SplashView extends StatefulWidget {
   State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> {
+class _SplashViewState extends State<SplashView>
+    with SingleTickerProviderStateMixin {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
+
+    // 🎬 Setup fade-in controller
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+
+    // Start fade-in
+    _controller.forward();
+
     _initializeApp();
   }
 
   Future<void> _initializeApp() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(seconds: 3)); // allow fade to play
 
-    Timer(const Duration(seconds: 2), () async {
-      // ✅ Option 1: Use secure storage
-      final uid = await _storage.read(key: 'uid');
+    final uid = await _storage.read(key: 'uid');
+    final user = FirebaseAuth.instance.currentUser;
 
-      // ✅ Option 2: Use FirebaseAuth directly (safer)
-      final user = FirebaseAuth.instance.currentUser;
+    if (uid != null && uid.isNotEmpty && user != null) {
+      Navigator.pushReplacementNamed(context, RoutesName.main);
+    } else {
+      Navigator.pushReplacementNamed(context, RoutesName.login);
+    }
+  }
 
-      if (uid != null && uid.isNotEmpty && user != null) {
-        // Already logged in → go to Home
-        Navigator.pushReplacementNamed(context, RoutesName.main);
-      } else {
-        // Not logged in → go to Login
-        Navigator.pushReplacementNamed(context, RoutesName.login);
-      }
-    });
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,7 +75,10 @@ class _SplashViewState extends State<SplashView> {
           ),
         ),
         child: Center(
-          child: SvgPicture.asset("assets/images/Isolation_Mode.svg"),
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: SvgPicture.asset("assets/images/Isolation_Mode.svg"),
+          ),
         ),
       ),
     );
