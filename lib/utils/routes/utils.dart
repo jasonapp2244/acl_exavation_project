@@ -123,3 +123,13 @@ snakBar(String massage, BuildContext context) {
     context,
   ).showSnackBar(SnackBar(backgroundColor: Colors.red, content: Text(massage)));
 }
+  String getInitials(String fullName) {
+    if (fullName.trim().isEmpty) return '';
+
+    List<String> parts = fullName.trim().split(' ');
+    if (parts.length == 1) {
+      return parts[0][0].toUpperCase();
+    } else {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+  }

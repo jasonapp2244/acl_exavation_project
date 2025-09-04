@@ -1,3 +1,4 @@
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/view/widgets/custom_textfield.dart';
 import 'package:acl/viewmodel/signup_view_model.dart';
 import 'package:acl/res/components/app_color.dart';
@@ -203,14 +204,7 @@ class _SignupViewState extends State<SignupView> {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: signupVM.isLoading
-              ? SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                )
+              ? SizedBox(height: 20, width: 20, child: CustomLoading())
               : Text(
                   "Signup",
                   style: GoogleFonts.rethinkSans(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:acl/view/search_track_log_view.dart';
 import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
 import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
@@ -19,6 +21,7 @@ import 'package:acl/view/time_format_view.dart';
 import 'package:acl/view/truck_log_detail_view.dart';
 import 'package:acl/view/truck_log_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class Routes {
@@ -31,7 +34,19 @@ class Routes {
       case RoutesName.signup:
         return MaterialPageRoute(builder: (_) => SignupView());
       case RoutesName.home:
-        return MaterialPageRoute(builder: (_) => Homeview());
+        return MaterialPageRoute(
+          builder: (_) => WillPopScope(
+            onWillPop: () async {
+              // Close the app
+
+              SystemNavigator.pop(); // preferred for Android
+              // exit(0); // alternative, but not recommended for iOS
+              return false; // stop default back navigation
+            },
+            child: const Homeview(),
+          ),
+        );
+
       case RoutesName.truckLog:
         return MaterialPageRoute(builder: (_) => TruckLogView());
 
@@ -75,8 +90,15 @@ class Routes {
         return MaterialPageRoute(builder: (_) => SearchTrackFieldView());
       default:
         return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(child: Text('No route defined for ${settings.name}')),
+          builder: (_) => WillPopScope(
+            onWillPop: () async {
+              // Close the app
+
+              SystemNavigator.pop(); // preferred for Android
+              // exit(0); // alternative, but not recommended for iOS
+              return false; // stop default back navigation
+            },
+            child: const MainScreen(),
           ),
         );
     }

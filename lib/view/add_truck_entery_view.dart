@@ -1,3 +1,4 @@
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/viewmodel/truck_driver_model_view.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/auth_button.dart';
@@ -35,7 +36,7 @@ class AddTruckEnteryView extends StatelessWidget {
                       SizedBox(height: Responsive.h(1)),
                       _buildTruckNumberField(truckProvider),
                       SizedBox(height: Responsive.h(1)),
-                      _buildLicensePlateUpload(truckProvider),
+                      //    _buildLicensePlateUpload(truckProvider),
                       SizedBox(height: Responsive.h(2)),
                       _buildActionButtons(truckProvider, context),
                     ],
@@ -161,7 +162,7 @@ class AddTruckEnteryView extends StatelessWidget {
         ),
         child: Center(
           child: provider.isSaveLoading ?? false
-              ? const CircularProgressIndicator(color: AppColor.whiteColor)
+              ? CustomLoading()
               : Text(
                   "Save",
                   style: GoogleFonts.rethinkSans(fontWeight: FontWeight.bold),
@@ -203,7 +204,7 @@ class AddTruckEnteryView extends StatelessWidget {
         ),
         child: Center(
           child: provider.isTimeInLoading ?? false
-              ? const CircularProgressIndicator(color: AppColor.whiteColor)
+              ? CustomLoading()
               : Text(
                   "Save & Time-In",
                   style: GoogleFonts.rethinkSans(fontWeight: FontWeight.bold),

@@ -34,6 +34,7 @@ class CustomTextField extends StatelessWidget {
       onChanged: onChanged,
       validator: validator,
       maxLines: maxLines ?? 1,
+      cursorColor: Color(0xFF4EEED0),
       decoration: InputDecoration(
         prefixIcon: Padding(
           padding: const EdgeInsets.all(12.0),

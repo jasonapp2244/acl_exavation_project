@@ -1,3 +1,4 @@
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/view/widgets/custom_textfield.dart';
 import 'package:acl/viewmodel/forgot_password_model_view.dart';
 import 'package:acl/viewmodel/login_view_model.dart';
@@ -98,24 +99,15 @@ class _LoginviewState extends State<Loginview> {
             key: _formKey,
             child: Column(
               children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      _buildErrorMessage(loginModel),
-                      _buildFormFields(loginModel),
-                      SizedBox(height: Responsive.h(2)),
-                      _buildForgotPasswordLink(),
-                      SizedBox(height: Responsive.h(2)),
-                      _buildLoginButton(loginModel),
+                _buildErrorMessage(loginModel),
+                _buildFormFields(loginModel),
+                SizedBox(height: Responsive.h(2)),
+                _buildForgotPasswordLink(),
+                SizedBox(height: Responsive.h(2)),
+                _buildLoginButton(loginModel),
 
-                      // Fixed Signup link at bottom
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: Responsive.h(2)),
-                  child: _buildSignupLink(),
-                ),
+                SizedBox(height: Responsive.h(2)),
+                _buildSignupLink(),
               ],
             ),
           );
@@ -224,14 +216,7 @@ class _LoginviewState extends State<Loginview> {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: loginModel.isLoading
-              ? SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                )
+              ? SizedBox(height: 20, width: 20, child: CustomLoading())
               : Text(
                   "Login",
                   style: GoogleFonts.rethinkSans(

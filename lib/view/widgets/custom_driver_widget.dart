@@ -250,7 +250,7 @@ class CustomTruckEntryCardWidget extends StatelessWidget {
                     color: AppColor.primaryColor,
                     borderRadius: BorderRadius.circular(22),
                   ),
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(10),
                   child: const Text(
                     "View All Logs",
                     style: TextStyle(color: Colors.white),

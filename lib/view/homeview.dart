@@ -66,7 +66,6 @@ class _HomeviewState extends State<Homeview> {
   // ---------------- HEADER SECTION ----------------
   Widget _buildHeaderSection(BuildContext context, truckProvider) {
     return Container(
-      height: 370,
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: RadialGradient(
@@ -93,6 +92,7 @@ class _HomeviewState extends State<Homeview> {
                 _buildOnSiteDepartedRow(truckProvider),
                 SizedBox(height: Responsive.h(1)),
                 _buildAddTruckButton(context),
+                SizedBox(height: Responsive.h(1)),
               ],
             );
           },
@@ -108,8 +108,22 @@ class _HomeviewState extends State<Homeview> {
       children: [
         Row(
           children: [
-            CircleAvatar(
-              backgroundImage: AssetImage("assets/images/Ellipse 2@2x.png"),
+            Container(
+              width: Responsive.w(12),
+              height: Responsive.h(12),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: Center(
+                child: Text(
+                  Utils().getInitials(profileController.name.toString()),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
             ),
             SizedBox(width: Responsive.w(2)),
             Column(

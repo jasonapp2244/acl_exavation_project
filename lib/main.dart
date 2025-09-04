@@ -42,6 +42,7 @@ import 'package:acl/viewmodel/forgot_password_model_view.dart';
 import 'package:acl/viewmodel/login_view_model.dart';
 import 'package:acl/viewmodel/logout_view_model.dart';
 import 'package:acl/viewmodel/searchfield_view_model.dart';
+import 'package:acl/viewmodel/settings_reset_password_view_model.dart';
 import 'package:acl/viewmodel/signup_view_model.dart';
 import 'package:acl/viewmodel/truck_driver_model_view.dart';
 import 'package:acl/viewmodel/truck_log_detail_model_view.dart';
@@ -68,7 +69,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LogoutViewModel()),
         ChangeNotifierProvider(create: (_) => ForgotPasswordModelView()),
         ChangeNotifierProvider(create: (_) => ChangeEmailModelView()),
-        ChangeNotifierProvider(create: (_) => ChangeEmailModelView()),
+        ChangeNotifierProvider(create: (_) => ChangePasswordViewModel()),
         ChangeNotifierProvider(create: (_) => UserProfileModelView()),
         ChangeNotifierProvider(
           create: (_) => TruckEntryViewModel(),

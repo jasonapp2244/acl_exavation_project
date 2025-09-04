@@ -1,3 +1,4 @@
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:acl/viewmodel/edit_truck_entry_model_view.dart';
 import 'package:acl/res/components/app_color.dart';
 import 'package:acl/res/components/auth_button.dart';
@@ -84,9 +85,7 @@ class _EditTruckEntryViewState extends State<EditTruckEntryView> {
                       // Loading indicator
                       if (controller.isLoading)
                         Center(
-                          child: CircularProgressIndicator(
-                            color: AppColor.primaryColor,
-                          ),
+                          child:CustomLoading()
                         ),
 
                       // Error Message

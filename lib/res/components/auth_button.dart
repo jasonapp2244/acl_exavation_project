@@ -1,4 +1,5 @@
 import 'package:acl/res/components/app_color.dart';
+import 'package:acl/view/widgets/custom_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -53,7 +54,7 @@ class AuthButton extends StatelessWidget {
                 SizedBox(
                   height: 20,
                   width: 20,
-                  child: CustomLoadingAnimation(),
+                  child: CustomLoading()
                 ),
               ],
             ],
@@ -64,14 +65,3 @@ class AuthButton extends StatelessWidget {
   }
 }
 
-class CustomLoadingAnimation extends StatelessWidget {
-  const CustomLoadingAnimation({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return LoadingAnimationWidget.staggeredDotsWave(
-      color: Colors.white,
-      size: MediaQuery.sizeOf(context).height * 0.02,
-    );
-  }
-}
