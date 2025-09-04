@@ -82,7 +82,9 @@ class _SearchFieldViewState extends State<SearchFieldView> {
   // ------------------ SEARCH RESULTS ------------------
   Widget _buildSearchResults(searchProvider, String text) {
     return StreamBuilder<List<TruckDriverRecordModel>>(
-      stream: searchProvider.truckEntriesStream(searchText: text),
+      stream: searchProvider.truckEntriesStream(
+        searchText: searchByNumberController.text,
+      ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(

@@ -78,40 +78,54 @@ class TruckLogsViewModel extends ChangeNotifier {
     });
   }
 
-  Stream<List<TruckDriverRecordModel>> searchByTruckNumber(String truckNumber) {
+  Stream<List<TruckDriverRecordModel>> searchByTruckNumber(String searchText) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception("User not logged in");
 
-    return FirebaseFirestore.instance
+    final truckEntriesRef = FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
-        .collection('truck_entries')
-        .where('truckNumber', isEqualTo: truckNumber)
-        .snapshots()
-        .asyncMap((snapshot) async {
-          final List<TruckDriverRecordModel> logs = [];
-          for (var truckDoc in snapshot.docs) {
-            final logsSnapshot = await truckDoc.reference
-                .collection('logs')
-                .orderBy('timeIn', descending: true)
-                .get();
+        .collection('truck_entries');
 
-            if (logsSnapshot.docs.isNotEmpty) {
-              final latestLog = logsSnapshot.docs.first.data();
-              final truckData = truckDoc.data();
+    // Listen to all active truck entries
+    return truckEntriesRef.where('isActive', isEqualTo: 1).snapshots().asyncMap(
+      (snapshot) async {
+        final List<TruckDriverRecordModel> results = [];
 
-              final mergedData = {
-                'driverName': truckData['driverName'],
-                'truckNumber': truckData['truckNumber'],
-                ...latestLog,
-                'totalLogs': logsSnapshot.size,
-              };
+        for (var truckDoc in snapshot.docs) {
+          final truckData = truckDoc.data();
+          final truckNumber =
+              truckData['truckNumber']?.toString().toLowerCase() ?? '';
 
-              logs.add(TruckDriverRecordModel.fromMap(mergedData));
-            }
+          // Filter by searchText (partial match)
+          if (searchText.trim().isNotEmpty &&
+              !truckNumber.contains(searchText.trim().toLowerCase())) {
+            continue; // skip if it doesn't match
           }
-          return logs;
-        });
+
+          // Fetch latest log for this truck
+          final logsSnapshot = await truckDoc.reference
+              .collection('logs')
+              .orderBy('timeIn', descending: true)
+              .limit(1)
+              .get();
+
+          Map<String, dynamic> mergedData = {
+            'driverName': truckData['driverName'],
+            'truckNumber': truckData['truckNumber'],
+            'totalLogs': logsSnapshot.size,
+          };
+
+          if (logsSnapshot.docs.isNotEmpty) {
+            mergedData.addAll(logsSnapshot.docs.first.data());
+          }
+
+          results.add(TruckDriverRecordModel.fromMap(mergedData));
+        }
+
+        return results;
+      },
+    );
   }
 
   Future<void> deleteTruckEntry(String truckNo) async {
