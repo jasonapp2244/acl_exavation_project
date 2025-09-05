@@ -37,6 +37,7 @@
 //   }
 // }
 
+import 'package:acl/res/components/app_color.dart';
 import 'package:acl/viewmodel/change_email_model_view.dart';
 import 'package:acl/viewmodel/forgot_password_model_view.dart';
 import 'package:acl/viewmodel/login_view_model.dart';
@@ -92,10 +93,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
       title: 'Your App Name',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: AppColor.primaryColor,
+          selectionColor: AppColor.primaryColor.withValues(
+            alpha: 0.5,
+          ), // Changed from withValues to withOpacity
+          selectionHandleColor: AppColor.primaryColor,
+        ),
+        // colorScheme: ColorScheme.fromSwatch(primarySwatch: AppColor.red),
+        useMaterial3: true,
       ),
       initialRoute: RoutesName.splash,
       onGenerateRoute: Routes.generateRoutes,
