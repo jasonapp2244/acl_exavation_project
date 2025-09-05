@@ -307,7 +307,7 @@ class TruckEntryViewModel extends ChangeNotifier {
           'timeOut': now,
           'event': 'Completed', // or keep it as "Time In + Time Out"
           'timestamp': now,
-          'status': 'departed',
+          'status': 'Departed',
         });
       } else {
         // 🚨 Fallback: no open log found → create a standalone Time Out log
